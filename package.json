@@ -1,0 +1,25 @@
+{
+  "name": "NoSQL-Game-Battle-System",
+  "version": "1.0.0",
+  "description": "CPSC 531 Project",
+  "main": "index.js",
+  "dependencies": {
+    "mongodb": "^3.6.6",
+    "node": "^15.14.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BurdickBr/NoSQL-Game-Battle-System.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BurdickBr/NoSQL-Game-Battle-System/issues"
+  },
+  "homepage": "https://github.com/BurdickBr/NoSQL-Game-Battle-System#readme"
+}
