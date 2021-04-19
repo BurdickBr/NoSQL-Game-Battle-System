@@ -1,4 +1,4 @@
-const { PlayerDB, EnemyDB} = require('./modules/DBFields')
+const { PlayerDB, EnemyDB } = require('./modules/DBFields')
 const { MongoClient } = require("mongodb");
 
 
@@ -46,7 +46,6 @@ async function run() {
     
 
     console.log(movie);
-    console.log("PlayerDB:", PlayerDB.NAME)
   } finally {
     // Ensures that the client will close when you finish/error
     await client.close();
