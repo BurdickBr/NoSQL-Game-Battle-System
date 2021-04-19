@@ -1,5 +1,6 @@
 const { MongoClient } = require("mongodb");
 
+
 // Replace the uri string with your MongoDB deployment's connection string.
 const uri =
   "mongodb+srv://GameBattleAdmin:GBAdminTest@nosqlgamebattlesystem.6mkqb.mongodb.net/test";
@@ -49,4 +50,5 @@ async function run() {
     await client.close();
   }
 }
+
 run().catch(console.dir);
