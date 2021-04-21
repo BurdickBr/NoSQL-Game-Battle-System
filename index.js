@@ -1,4 +1,4 @@
-const { PlayerCollection, EnemyCollection, ItemCollection, ActionCollection, BattleLogCollection, GameDB } 
+const { PlayerCollection, EnemyCollection, ItemCollection, ActionCollection, BattleLogCollection, GAME_DB } 
   = require('./modules/DBFields')
 const { mongoDBUri } = require('./Constants')
 const { MongoClient } = require("mongodb");
@@ -16,7 +16,7 @@ async function run() {
   try {
     await client.connect();
 
-    const database = client.db(GameDB);
+    const database = client.db(GAME_DB);
     const playerCollection = database.collection(PlayerCollection.COLLECTION);
 
     const newPlayer = {

@@ -37,7 +37,7 @@ const BattleLogCollection = {
     COLLECTION: "BattleLog"
 }
 
-const GameDB = 'GameBattleSystem'
+const GAME_DB = 'GameBattleSystem'
 
 module.exports = { PlayerCollection, EnemyCollection,  ItemCollection,  
-                    ActionCollection,  BattleLogCollection, GameDB }
+                    ActionCollection,  BattleLogCollection, GAME_DB }
