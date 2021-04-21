@@ -1,17 +1,43 @@
-const PlayerDB = {
+const PlayerCollection = {
     NAME: "player_name",
     MAX_HP: "max_health",
     CUR_HP: "current_health",
     DMG: "damage",
     EXP: "experience",
-    ITEMS: "items"
+    ITEMS: "items",
+    THIS: "Player"
 };
 
-const EnemyDB = {
+const EnemyCollection = {
     NAME: "enemy_name",
     MAX_HP: "max_health",
     CUR_HP: "current_health",
-    DMG: "damage"
+    DMG: "damage",
+    THIS: "Enemy"
 }
 
-module.exports = {PlayerDB, EnemyDB}
+const ItemCollection = {
+    NAME: "item_name",
+    DESC: "item_description",
+    EFF:  "item_effect",
+    THIS: "Item"
+}
+
+const ActionCollection = {
+    NAME: "action_name",
+    PERF_ID: "performer_id",
+    DMG: "action_damage",
+    THIS: "Action"
+}
+
+const BattleLogCollection = {
+    MSG: "entry_message",
+    TIME: "timestamp",
+    ACTION: "action_id",
+    THIS: "BattleLog"
+}
+
+const GameDB = 'GameBattleSystem'
+
+module.exports = { PlayerCollection, EnemyCollection,  ItemCollection,  
+                    ActionCollection,  BattleLogCollection, GameDB }

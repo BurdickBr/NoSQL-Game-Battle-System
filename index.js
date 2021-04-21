@@ -1,12 +1,13 @@
-const { PlayerDB, EnemyDB } = require('./modules/DBFields')
+const { PlayerCollection, EnemyCollection, ItemCollection, ActionCollection, BattleLogCollection, GameDB } 
+  = require('./modules/DBFields')
+const { mongoDBUri } = require('./Constants')
 const { MongoClient } = require("mongodb");
 
 
 // Replace the uri string with your MongoDB deployment's connection string.
-const uri =
-  "mongodb+srv://GameBattleAdmin:GBAdminTest@nosqlgamebattlesystem.6mkqb.mongodb.net/test";
 
-const client = new MongoClient(uri, {
+
+const client = new MongoClient(mongoDBUri , {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
