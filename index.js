@@ -16,37 +16,33 @@ async function run() {
   try {
     await client.connect();
 
-    const database = client.db('sample_mflix');
-    const movies = database.collection('movies');
+    const database = client.db(GameDB);
+    const playerCollection = database.collection(PlayerCollection.COLLECTION);
 
-    const newMovie = { 
-        title: "New Movie Test",
-        genres: ["Adventure", "Comedy"],           
+    const newPlayer = {
+      name: "Chuck",
+      level: 5
     }
 
-    movies.insertOne(newMovie);
+    await playerCollection.insertOne(newPlayer);
 
-    // Query for a movie that has the title 'Back to the Future'
-    let query = { title: 'New Movie Test' };
-    let movie = await movies.findOne(query);
+    let query = { name: 'Chuck' };
+    let plyr = await playerCollection.findOne(query);
 
-    console.log(movie);
+    console.log("Player Name:", plyr.name);
 
-    let randString = ' more stuff'
-
-    let movieUpdate = {
+    let plyrUpdate = {
         $set: {
-            title: "New Movie Test 2" + randString
+            name: "Better Chuck"
         }
     };
-
-    movies.updateOne(query, movieUpdate);
-
-    query = { title: 'New Movie Test 2' + randString };
-    movie = await movies.findOne(query);
+    query = { name: 'Better Chuck' };
+    await playerCollection.updateOne(query, plyrUpdate);
+    let newPlyr = await playerCollection.findOne(query)
     
 
-    console.log(movie);
+    console.log("New Player Name:", newPlyr.name);
+
   } finally {
     // Ensures that the client will close when you finish/error
     await client.close();

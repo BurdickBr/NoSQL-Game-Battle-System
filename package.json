@@ -4,6 +4,7 @@
   "description": "CPSC 531 Project",
   "main": "index.js",
   "dependencies": {
+    "express": "^4.17.1",
     "mongodb": "^3.6.6",
     "node": "^15.14.0"
   },

@@ -5,7 +5,7 @@ const PlayerCollection = {
     DMG: "damage",
     EXP: "experience",
     ITEMS: "items",
-    THIS: "Player"
+    COLLECTION: "Player"
 };
 
 const EnemyCollection = {
@@ -13,28 +13,28 @@ const EnemyCollection = {
     MAX_HP: "max_health",
     CUR_HP: "current_health",
     DMG: "damage",
-    THIS: "Enemy"
+    COLLECTION: "Enemy"
 }
 
 const ItemCollection = {
     NAME: "item_name",
     DESC: "item_description",
     EFF:  "item_effect",
-    THIS: "Item"
+    COLLECTION: "Item"
 }
 
 const ActionCollection = {
     NAME: "action_name",
     PERF_ID: "performer_id",
     DMG: "action_damage",
-    THIS: "Action"
+    COLLECTION: "Action"
 }
 
 const BattleLogCollection = {
     MSG: "entry_message",
     TIME: "timestamp",
     ACTION: "action_id",
-    THIS: "BattleLog"
+    COLLECTION: "BattleLog"
 }
 
 const GameDB = 'GameBattleSystem'
