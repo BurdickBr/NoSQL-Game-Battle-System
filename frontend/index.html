@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="//cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js"></script>
+        <script src="//cdn.jsdelivr.net/npm/phaser@3.24.1/dist/phaser.min.js"></script>
+    </head>
+    <body>
+        <div id = "game"></div>
+        <script>
+
+            // game logic
+            const phaserConfig = {
+                type: Phaser.AUTO,
+                parent: "game",
+                width: 1280,
+                height: 720,
+                backgroundColor: "#E7F6EF",
+                dom: {
+                    createContainer: true,
+                },
+                physics: {
+                    default: "arcade",
+                    arcade: {
+                        gravity: {y: 200 }
+                    }
+                },
+                scene: {
+                    init: initScene,
+                    preload: preloadScene,
+                    create: createScene
+                }
+            }
+
+            const game = new Phaser.Game(phaserConfig);
+
+            // Functions to interact with backend during game
+            function initScene(){
+                this.socket = io("http://localhost:3000", { autoConnect: false });
+                this.battleMessages = [];
+            }
+
+            function preloadScene(){
+                this.load.html("form", "form.html");
+                this.load.image("image", "image.jpg");
+            }
+
+            function createScene() {
+                this.textInput = this.add.dom(1135, 690).createFromCache("form").setOrigin(0.5);
+                this.chat = this.add.text(1000, 10, "", {
+                    lineSpacing: 15,
+                    backgroundColor: "#21313CDD",
+                    color: "#26924F",
+                    padding: 10,
+                    fontStyle: "bold"
+                });
+                this.chat.setFixedSize(270, 645);
+
+                this.spriteGroup = this.physics.add.group({
+                    defaultKey: "image1",
+                    maxSize: 15
+                })
+
+                for (let i = 0; i < 5; i++){
+                    let randomx = Math.floor(Math.random() * 1000);
+                    let randomy = Math.floor(Math.random() * 600);
+                    this.spriteGroup.get(randomx, randomy)
+                        .setVelocity(100, 200)
+                        .setBounce(1, 1)
+                        .setCollideWorldBounds(true);
+                }
+
+                this.enterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+
+                this.enterKey.on("down", event => {
+                    let chatbox = this.textInput.getChildByName("chat");    // this "chat" name needs to match with the form.html file name convention
+                    if(chatbox.value != "") {
+                        this.socket.emit("message", chatbox.value);
+                        chatbox.value = "";
+                    }
+                });
+
+                this.socket.connect();
+
+                this.socket.on("connect", async () => {
+                    this.socket.emit("join", "mongodb");
+
+                });
+
+                this.socket.on("joined", async (gameID) => {
+                    let result = await fetch(`http://localhost:3000/chats?room=${gameID}`)
+                        .then(response => response.json());
+                    this.battleMessages = result.messages;
+                    this.battleMessages.push("welcome to " + gameID);
+                    if(this.battleMessages.length > 20) {
+                        this.battleMessages.shift();
+                    }
+
+                    this.chat.setText(this.battleMessages);
+
+                });
+
+                this.socket.on("message", (message) => {
+                    this.battleMessages.push(message);
+                    if (this.battleMessages.length > 20) {
+                        this.battleMessages.shift();
+                    }
+                    this.chat.setText(this.battleMessages);
+                })
+            }
+
+        </script>
+    </body>
+</html>

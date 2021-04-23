@@ -1,0 +1,70 @@
+[{
+    "NAME":"MeanMan",
+    "MAX_HP":10,
+    "CUR_HP":10,
+    "DMG":3,
+    "COLLECTION":"Enemy"    
+},
+{
+    "NAME":"CrazyGuy",
+    "MAX_HP":15,
+    "CUR_HP":15,
+    "DMG":2,
+    "COLLECTION":"Enemy"    
+},
+{
+    "NAME":"ReallyMeanMan",
+    "MAX_HP":20,
+    "CUR_HP":20,
+    "DMG":4,
+    "COLLECTION":"Enemy"    
+},
+{
+    "NAME":"ReallyCrazyGuy",
+    "MAX_HP":25,
+    "CUR_HP":25,
+    "DMG":3,
+    "COLLECTION":"Enemy"    
+},
+{
+    "NAME":"DudeGuy",
+    "MAX_HP":10,
+    "CUR_HP":10,
+    "DMG":2,
+    "COLLECTION":"Enemy"    
+},
+{
+    "NAME":"Squilliam IV",
+    "MAX_HP":50,
+    "CUR_HP":50,
+    "DMG":5,
+    "COLLECTION":"Enemy"    
+},
+{
+    "NAME":"O' Long Johnson",
+    "MAX_HP":25,
+    "CUR_HP":25,
+    "DMG":4,
+    "COLLECTION":"Enemy"    
+},
+{
+    "NAME":"Enemy #8",
+    "MAX_HP":20,
+    "CUR_HP":20,
+    "DMG":3,
+    "COLLECTION":"Enemy"    
+},
+{
+    "NAME":"Enemy #9",
+    "MAX_HP":23,
+    "CUR_HP":23,
+    "DMG":4,
+    "COLLECTION":"Enemy"    
+},
+{
+    "NAME":"Enemy #10",
+    "MAX_HP":30,
+    "CUR_HP":30,
+    "DMG":4,
+    "COLLECTION":"Enemy"    
+}]

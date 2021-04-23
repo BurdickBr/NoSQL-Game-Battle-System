@@ -1,0 +1,18 @@
+[{
+    "NAME":"health potion",
+    "DESC":"Raises player's current health value by 10.",
+    "EFF":"CUR_HP+10",
+    "COLLECTION":"ITEM"
+},
+{
+    "NAME":"damage potion",
+    "DESC":"Raises player's current damage value by 2.",
+    "EFF":"DMG+2",
+    "COLLECTION":"ITEM"
+},
+{
+    "NAME":"speed potion",
+    "DESC":"Raises player's current speed value by 10.",
+    "EFF":"SPEED+10",
+    "COLLECTION":"ITEM"
+}]
