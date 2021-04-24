@@ -43,7 +43,12 @@ io.on("connection", (socket) => {
         console.log("character sent:", character);
         collection.updateOne({ "_id": socket.activeRoom} , {
             "$push": {
-                "character": character
+                "player_name": character.name,
+                "max_health": character.maxHP,
+                "current_health": character.curHP,
+                "damage": character.damage,
+                "experience": character.exp,
+                "items": character.items
             }    
         });
         io.to(socket.activeRoom).emit("character", character); // this might not be necessary, it's mainly to update the chat for the entire chat room, but that's not a feature we're concerned with.
@@ -65,7 +70,7 @@ http.listen(PORT, async () => {
     try {
         await client.connect();
         collection = client.db("test").collection("chat");
-        console.log("Listenting on port: %s", http.address().port);         //should be listening on port 3000 
+        console.log("Listenting on port: %s", http.address().port);  //should be listening on port 3000 
     } catch (e) {
         console.error(e)
     }
