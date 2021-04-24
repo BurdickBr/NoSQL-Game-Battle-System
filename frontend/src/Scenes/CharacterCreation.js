@@ -11,7 +11,7 @@ class CharacterCreation extends Phaser.Scene {
 
     preload() {
         this.load.html("form", "form.html");
-        this.load.image("image", "image.jpg");
+        this.load.image("tien", "tien.jpg");
     }
 
     create() {
@@ -27,7 +27,7 @@ class CharacterCreation extends Phaser.Scene {
         this.chat.setDepth(1);
         
         this.spriteGroup = this.physics.add.group({
-        defaultKey: "image",
+        defaultKey: "tien",
             maxSize: 15
         })
         
@@ -87,7 +87,6 @@ class CharacterCreation extends Phaser.Scene {
 
     update() {
         if (this.charCreated) {
-            console.log("switching to battle scene");
             this.scene.start('battleScene');
         }
     }

@@ -8,7 +8,16 @@ class Battle extends Phaser.Scene {
             });
     }
 
-    
+    preload() {
+        //TODO: preload
+    }
+
+    create () {
+        /*
+            TODO: create buttons, images, display box
+            for stats, and battle log
+        */
+    }
 
     update() {
         //TODO: Check battle buttons
