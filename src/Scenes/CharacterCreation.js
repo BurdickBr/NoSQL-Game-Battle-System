@@ -1,6 +1,7 @@
 class CharacterCreation extends Phaser.Scene {
     constructor() {
         super("characterCreationScene");
+        console.log("CharacterCreation constructor");
         this.socket = io("http://localhost:3000", {
                 transports:["websocket","polling","flashsocket"]
             });
@@ -87,6 +88,6 @@ class CharacterCreation extends Phaser.Scene {
     }
 
     update() {
-        
+
     }
 }
