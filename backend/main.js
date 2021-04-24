@@ -14,6 +14,7 @@ const io = require("socket.io")(http, {
         res.end();
     }
 });
+
 const {MongoClient} = require("mongodb");
 const client = new MongoClient("mongodb+srv://FrontEndUser:pass1234@nosqlgamebattlesystem.6mkqb.mongodb.net/test?retryWrites=true&w=majority");
 const PORT = 3000
@@ -22,7 +23,7 @@ express.use(cors());
 var collection;
 
 io.on("connection", (socket) => {
-    console.log('holy fuck we have a connection')
+    console.log('houston we have a connection')
     socket.on("join", async (gameID) => {
         try {
             
