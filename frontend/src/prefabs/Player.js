@@ -1,5 +1,6 @@
 class Player {
     constructor(name) {
+        this._id = name;
         this.name = name;
         this.maxHP = 50;
         this.curHP = this.maxHP;

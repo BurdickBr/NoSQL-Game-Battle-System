@@ -52,7 +52,7 @@ class CharacterCreation extends Phaser.Scene {
                 this.socket.emit("character", newPlayer); //TODO: SEND PLAYER OBJECT
                 this.gameID = newPlayer.name;
                 this.socket.emit("join", this.gameID);     
-                console.log('connected to' + this.gameID)
+                console.log('connected to ' + this.gameID)
                 chatbox.value = "";
                 this.charCreated = true;
             }

@@ -39,20 +39,17 @@ io.on("connection", (socket) => {
             console.error(e);
         }
     });
-    socket.on("character", (character) => {
-        console.log("character sent:", character);
-        playerCollection.insertOne(character);
-        // chatCollection.updateOne({ "_id": socket.activeRoom} , {
-        //     "$push": {
-        //         "player_name": character.name,
-        //         "max_health": character.maxHP,
-        //         "current_health": character.curHP,
-        //         "damage": character.damage,
-        //         "experience": character.exp,
-        //         "items": character.items
-        //     }    
-        // });
-        //io.to(socket.activeRoom).emit("character", character); // this might not be necessary, it's mainly to update the chat for the entire chat room, but that's not a feature we're concerned with.
+    socket.on("character", async (character) => {
+        try {
+            let result = await playerCollection.findOne({ "_id": character.name});    //allows user to provide gameID if that exists, otherwise create a new one for them.
+            if (!result) {
+                await playerCollection.insertOne(character);
+            }
+            //No need to insert if character exists
+        }
+        catch(e) {
+            console.error(e)
+        }
     });
 });
 
