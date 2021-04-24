@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script src="//cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js"></script>
+        <script src="https://cdn.socket.io/3.1.3/socket.io.min.js" integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh" crossorigin="anonymous"></script>
         <script src="//cdn.jsdelivr.net/npm/phaser@3.24.1/dist/phaser.min.js"></script>
     </head>
     <body>
         <div id = "game"></div>
         <script>
+            let socket = null
 
             // game logic
             const phaserConfig = {
@@ -16,7 +17,7 @@
                 height: 720,
                 backgroundColor: "#E7F6EF",
                 dom: {
-                    createContainer: true,
+                    createContainer: true
                 },
                 physics: {
                     default: "arcade",
@@ -33,17 +34,20 @@
 
             const game = new Phaser.Game(phaserConfig);
 
-            // Functions to interact with backend during game
+            // Functions to setup webpage during loadup.
             function initScene(){
-                this.socket = io("http://localhost:3000", { autoConnect: false });
-                this.battleMessages = [];
+                this.socket = io("http://localhost:3000", {
+                    transports:["websocket","polling","flashsocket"]
+                });
+                this.chatMessages = [];
             }
 
+            
             function preloadScene(){
                 this.load.html("form", "form.html");
                 this.load.image("image", "image.jpg");
             }
-
+            
             function createScene() {
                 this.textInput = this.add.dom(1135, 690).createFromCache("form").setOrigin(0.5);
                 this.chat = this.add.text(1000, 10, "", {
@@ -54,23 +58,25 @@
                     fontStyle: "bold"
                 });
                 this.chat.setFixedSize(270, 645);
-
+                this.chat.setDepth(1);
+                
                 this.spriteGroup = this.physics.add.group({
-                    defaultKey: "image1",
+                    defaultKey: "image",
                     maxSize: 15
                 })
-
+                
                 for (let i = 0; i < 5; i++){
                     let randomx = Math.floor(Math.random() * 1000);
                     let randomy = Math.floor(Math.random() * 600);
                     this.spriteGroup.get(randomx, randomy)
-                        .setVelocity(100, 200)
-                        .setBounce(1, 1)
-                        .setCollideWorldBounds(true);
+                    .setVelocity(100, 200)
+                    .setBounce(1, 1)
+                    .setCollideWorldBounds(true)
+                    .setScale(0.2);
                 }
-
+                
                 this.enterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
-
+                
                 this.enterKey.on("down", event => {
                     let chatbox = this.textInput.getChildByName("chat");    // this "chat" name needs to match with the form.html file name convention
                     if(chatbox.value != "") {
@@ -78,33 +84,40 @@
                         chatbox.value = "";
                     }
                 });
+                
+                
+                this.socket.connect("http://localhost:3000")
+                console.log(this.socket)
 
-                this.socket.connect();
-
-                this.socket.on("connect", async () => {
+                //this.socket.on("connect", async () => {
                     this.socket.emit("join", "mongodb");
-
-                });
-
+                    console.log('connected to mongoDB')
+                //});
+                
+                
                 this.socket.on("joined", async (gameID) => {
-                    let result = await fetch(`http://localhost:3000/chats?room=${gameID}`)
-                        .then(response => response.json());
-                    this.battleMessages = result.messages;
-                    this.battleMessages.push("welcome to " + gameID);
-                    if(this.battleMessages.length > 20) {
-                        this.battleMessages.shift();
+                    console.log("client joined mongoDB at gameID")
+                    let result = await fetch(`http://localhost:3000/battlelog/${gameID}`, {
+                        "Access-Control-Allow-Origin":"http://localhost:5000",
+                        "Content-Type": "application/json"
+                    })
+                    .then(response => response.json());
+                    this.chatMessages = result.messages;
+                    this.chatMessages.push("welcome to " + gameID);
+                    if(this.chatMessages.length > 20) {
+                        this.chatMessages.shift();
                     }
-
-                    this.chat.setText(this.battleMessages);
+                    
+                    this.chat.setText(this.chatMessages);
 
                 });
 
                 this.socket.on("message", (message) => {
-                    this.battleMessages.push(message);
-                    if (this.battleMessages.length > 20) {
-                        this.battleMessages.shift();
+                    this.chatMessages.push(message);
+                    if (this.chatMessages.length > 20) {
+                        this.chatMessages.shift();
                     }
-                    this.chat.setText(this.battleMessages);
+                    this.chat.setText(this.chatMessages);
                 })
             }
 
