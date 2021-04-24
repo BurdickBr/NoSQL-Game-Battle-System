@@ -1,12 +1,11 @@
 class Battle extends Phaser.Scene {
     constructor() {
         super("battleScene");
-        console.log("battleScene");
+        console.log("in battle scene constructor...");
 
         this.socket = io("http://localhost:3000", {
-                transports:["websocket","polling","flashsocket"]
-            });
-        
+            transports:["websocket","polling","flashsocket"]
+        });
         }
         
         preload() {
@@ -20,31 +19,34 @@ class Battle extends Phaser.Scene {
             Should start by grabbing the current player
             from the Player collection using gameID
             */
-           //let curPlayer = playerCollection.findOne(gameID);
-           const gameID = localStorage.getItem("gameID")
+
            this.socket.connect("http://localhost:3000")
-           console.log('Battle.js gameID: ' + gameID)           // retrieve gameID from local storage stored on user's browser.
            
-           this.socket.on("joined", async (gameID) => {
-               console.log("client joined battle.js at " + gameID)
-               let result = await fetch(`http://localhost:3000/battlelog/${gameID}`, {
-                   "Access-Control-Allow-Origin":"http://localhost:8000",
-                   "Content-Type": "application/json"
-                })
-                .then(response => response.json());
-                this.chatMessages = result.messages;
-                this.chatMessages.push("welcome to " + gameID);
-                if(this.chatMessages.length > 20) {
-                    this.chatMessages.shift();
-                }
-                
-                //this.chat.setText(this.chatMessages);
-            });
+           const gameID = localStorage.getItem("gameID")
+           console.log('Battle.js gameID: ' + gameID)           // retrieve gameID from local storage stored on user's browser.
+           this.socket.emit('findCharacter', gameID)
+           this.socket.on('receiveCharacter', (player) => {
+               this.curPlayer = player;
+               var playerRecieved = true;
+               if( playerRecieved) {
+                    console.log('received player information: ' + player)
+               }
+           });
+
+           
+        
+        //    this.socket.on("joinBattleScene", async (gameID) => {
+        //         console.log("client joined battle scene at gameID: " + gameID)
+        //         //this.chat.setText(this.chatMessages);
+        //    });
             
         }
         
         update() {
             //TODO: Check battle buttons
+            if(curPlayer) {
+                console.log('currentPlayer information ' + curPlayer)
+            }
         }
     }
     

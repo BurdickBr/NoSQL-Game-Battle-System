@@ -44,38 +44,30 @@ class CharacterCreation extends Phaser.Scene {
         this.enterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
         
         this.enterKey.on("down", event => {
-            console.log("charCreated:", this.charCreated);
+            console.log("ENTER KEY PRESSED!! Character name is being entered... need to emit this information to socket...");
             let nameBox = this.textInput.getChildByName("chat");    // this "chat" name needs to match with the form.html file name convention
             if (nameBox.value != "") {
                 let newPlayer = new Player(nameBox.value);
                 this.socket.emit("character", newPlayer); //TODO: SEND PLAYER OBJECT
                 gameID = newPlayer.name;
-                //               "join", "gameID" -> gameID should probably match userName.
-                this.socket.emit("join", gameID);     
+                this.socket.emit("createCharacter", gameID);     
                 console.log('connected to ' + gameID)
                 localStorage.setItem("gameID", gameID)  // Now that we have gameID, store it in local storage to retrieve in other scenes.
                 nameBox.value = "";
-                this.charCreated = true;
             }
         });
         
         this.socket.connect("http://localhost:3000")
-        console.log(this.socket)
+        //console.log(this.socket)
         
-        this.socket.on("joined", async (gameID) => {
-            console.log("client joined mongoDB at " + gameID)
+        // received characterCreated message from server with gameID, now we have the character id
+        console.log("character created... Character ID: " + gameID)
+        this.socket.on("characterCreated", async (gameID) => {
             let result = await fetch(`http://localhost:3000/battlelog/${gameID}`, {
                 "Access-Control-Allow-Origin":"http://localhost:8000",
                 "Content-Type": "application/json"
             })
-            .then(response => response.json());
-            this.battleMessages = result.messages;
-            this.battleMessages.push("welcome to " + gameID);
-            if(this.battleMessages.length > 20) {
-                this.battleMessages.shift();
-            }
-            
-            //this.chat.setText(this.battleMessages);
+            this.charCreated = true;
         });
 
         this.socket.on("message", (message) => {
@@ -89,6 +81,7 @@ class CharacterCreation extends Phaser.Scene {
 
     update() {
         if (this.charCreated) {
+            console.log("exiting character creation scene... moving to battleScene...")
             this.scene.start('battleScene');
         }
     }
