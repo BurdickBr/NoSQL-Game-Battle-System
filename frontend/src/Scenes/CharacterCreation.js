@@ -43,12 +43,12 @@ class CharacterCreation extends Phaser.Scene {
         
         this.enterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
         
-        this.enterKey.on("down", event => {
+        this.enterKey.on("down", async event => {
             console.log("ENTER KEY PRESSED!! Character name is being entered... need to emit this information to socket...");
             let nameBox = this.textInput.getChildByName("chat");    // this "chat" name needs to match with the form.html file name convention
             if (nameBox.value != "") {
                 let newPlayer = new Player(nameBox.value);
-                this.socket.emit("createCharacter", newPlayer); //TODO: SEND PLAYER OBJECT   
+                await this.socket.emit("createCharacter", newPlayer); //TODO: SEND PLAYER OBJECT   
                 gameID = newPlayer.name;
                 console.log('connected to ' + gameID)
                 localStorage.setItem("gameID", gameID)  // Now that we have gameID, store it in local storage to retrieve in other scenes.

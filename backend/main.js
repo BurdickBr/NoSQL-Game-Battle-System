@@ -43,12 +43,11 @@ io.on("connection", (socket) => {
     socket.on("findCharacter", async (gameID) => {
         try {
             console.log('Client is attempting to join a battle scene and needs to find his character... lets find one for them..')
-            let result = await playerCollection.findOne({ "_id": gameID});    //allows user to provide gameID if that exists, otherwise create a new one for them.
-            if (!result) {
-                console.log('no battle scene existed for them. lets insert one...')
-                await playerCollection.insertOne({ "_id":gameID});
-            }
-            socket.join(gameID);
+            console.log('findCharacter GameID: ', gameID);
+            await new Promise(r => setTimeout(r, 100));
+            let result = await playerCollection.findOne({"_id": gameID});    //allows user to provide gameID if that exists, otherwise create a new one for them.
+            console.log("Found character:", result)
+            //socket.join(gameID);
             socket.emit("receiveCharacter", result);
             socket.activeRoom = gameID; // store active room here so we can use it at our will.
             

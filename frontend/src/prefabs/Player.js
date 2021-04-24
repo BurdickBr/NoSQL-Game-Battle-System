@@ -14,7 +14,16 @@ class Player {
         return this.damage * atkPercent;
     }
 
-    static docToPlayer(player) {
-        //TODO: turn MongoDB document into a player object
+    /*
+        Turn MongoDB document into a player object
+    */
+    static docToPlayer(docPlayer) {
+        let newPlayer = new Player(docPlayer.name);
+        newPlayer.maxHP = docPlayer.maxHP;
+        newPlayer.curHP = docPlayer.curHP;
+        newPlayer.damage = docPlayer.damage;
+        newPlayer.exp = docPlayer.exp;
+        newPlayer.items = docPlayer.items;
+        return newPlayer;
     }
 }

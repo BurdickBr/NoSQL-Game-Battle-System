@@ -7,6 +7,7 @@ class Enemy {
         this.maxHP = enemy.maxHP;
         this.curHP = enemy.curHP;
         this.damage = enemy.damage;
+        this.img = enemy.img;
     }
 
     doAttack() {

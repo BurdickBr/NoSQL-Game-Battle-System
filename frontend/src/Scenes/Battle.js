@@ -27,7 +27,9 @@ class Battle extends Phaser.Scene {
            this.socket.emit('findCharacter', gameID)
            
            this.socket.on('receiveCharacter', (player) => {
-               this.curPlayer = player;
+               console.log("curPlayer Doc:", player);
+               this.curPlayer = Player.docToPlayer(player);
+               console.log('curPlayer Obj:', this.curPlayer);
                var playerRecieved = true;
                if( playerRecieved) {
                     console.log('received player information: ',player)
