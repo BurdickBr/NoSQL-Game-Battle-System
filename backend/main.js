@@ -44,7 +44,7 @@ io.on("connection", (socket) => {
         try {
             console.log('Client is attempting to join a battle scene and needs to find his character... lets find one for them..')
             console.log('findCharacter GameID: ', gameID);
-            await new Promise(r => setTimeout(r, 100));
+            await new Promise(r => setTimeout(r, 100)); //wait 100ms
             let result = await playerCollection.findOne({"_id": gameID});    //allows user to provide gameID if that exists, otherwise create a new one for them.
             console.log("Found character:", result)
             //socket.join(gameID);
