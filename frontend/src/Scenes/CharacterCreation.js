@@ -7,7 +7,6 @@ class CharacterCreation extends Phaser.Scene {
             });
         this.chatMessages = [];
         this.charCreated = false;
-        this.gameID = null;
     }
 
     preload() {
@@ -50,9 +49,9 @@ class CharacterCreation extends Phaser.Scene {
             if (chatbox.value != "") {
                 let newPlayer = new Player(chatbox.value);
                 this.socket.emit("character", newPlayer); //TODO: SEND PLAYER OBJECT
-                this.gameID = newPlayer.name;
-                this.socket.emit("join", this.gameID);     
-                console.log('connected to ' + this.gameID)
+                gameID = newPlayer.name;
+                this.socket.emit("join", gameID);     
+                console.log('connected to ' + gameID)
                 chatbox.value = "";
                 this.charCreated = true;
             }
@@ -88,6 +87,7 @@ class CharacterCreation extends Phaser.Scene {
 
     update() {
         if (this.charCreated) {
+            console.log("switching to battle scene");
             this.scene.start('battleScene');
         }
     }
