@@ -15,7 +15,9 @@ class Battle extends Phaser.Scene {
     create () {
         /*
             TODO: create buttons, images, display box
-            for stats, and battle log
+            for stats, and battle log.
+            Should start by grabbing the current player
+            from the Player collection using gameID
         */
     }
 
