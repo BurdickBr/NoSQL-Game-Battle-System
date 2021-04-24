@@ -48,8 +48,9 @@ class CharacterCreation extends Phaser.Scene {
             console.log("charCreated:", this.charCreated);
             let chatbox = this.textInput.getChildByName("chat");    // this "chat" name needs to match with the form.html file name convention
             if (chatbox.value != "") {
-                this.socket.emit("character", chatbox.value); //TODO: SEND PLAYER OBJECT
-                this.gameID = chatbox.value;
+                let newPlayer = new Player(chatbox.value);
+                this.socket.emit("character", newPlayer); //TODO: SEND PLAYER OBJECT
+                this.gameID = newPlayer.name;
                 this.socket.emit("join", this.gameID);     
                 console.log('connected to' + this.gameID)
                 chatbox.value = "";
