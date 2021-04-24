@@ -5,6 +5,6 @@ class Battle extends Phaser.Scene {
     }
 
     update() {
-        
+        //Check battle buttons
     }
 }
