@@ -48,12 +48,12 @@ class CharacterCreation extends Phaser.Scene {
             let nameBox = this.textInput.getChildByName("chat");    // this "chat" name needs to match with the form.html file name convention
             if (nameBox.value != "") {
                 let newPlayer = new Player(nameBox.value);
-                this.socket.emit("character", newPlayer); //TODO: SEND PLAYER OBJECT
+                this.socket.emit("createCharacter", newPlayer); //TODO: SEND PLAYER OBJECT   
                 gameID = newPlayer.name;
-                this.socket.emit("createCharacter", gameID);     
                 console.log('connected to ' + gameID)
                 localStorage.setItem("gameID", gameID)  // Now that we have gameID, store it in local storage to retrieve in other scenes.
                 nameBox.value = "";
+                this.charCreated = true;
             }
         });
         
@@ -62,13 +62,6 @@ class CharacterCreation extends Phaser.Scene {
         
         // received characterCreated message from server with gameID, now we have the character id
         console.log("character created... Character ID: " + gameID)
-        this.socket.on("characterCreated", async (gameID) => {
-            let result = await fetch(`http://localhost:3000/battlelog/${gameID}`, {
-                "Access-Control-Allow-Origin":"http://localhost:8000",
-                "Content-Type": "application/json"
-            })
-            this.charCreated = true;
-        });
 
         this.socket.on("message", (message) => {
             this.battleMessages.push(message);

@@ -25,11 +25,12 @@ class Battle extends Phaser.Scene {
            const gameID = localStorage.getItem("gameID")
            console.log('Battle.js gameID: ' + gameID)           // retrieve gameID from local storage stored on user's browser.
            this.socket.emit('findCharacter', gameID)
+           
            this.socket.on('receiveCharacter', (player) => {
                this.curPlayer = player;
                var playerRecieved = true;
                if( playerRecieved) {
-                    console.log('received player information: ' + player)
+                    console.log('received player information: ',player)
                }
            });
 
@@ -44,9 +45,6 @@ class Battle extends Phaser.Scene {
         
         update() {
             //TODO: Check battle buttons
-            if(curPlayer) {
-                console.log('currentPlayer information ' + curPlayer)
-            }
         }
     }
     

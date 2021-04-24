@@ -24,25 +24,22 @@ let logCollection, playerCollection;
 // On socket.io connection, do some stuff.
 io.on("connection", (socket) => {
     console.log('houston we have a connection')
-    // Below is the logic for creating a character, emitted in CharacterCreation.js file
-    socket.on("createCharacter", async (gameID) => {
+    // Below is the logic for creating a character, emitted in CharacterCreation.js
+    socket.on("createCharacter", async (character) => {
         try {
-            console.log('player is trying to create a character with name: ' + gameID)
-            let result = await playerCollection.findOne({ "_id": gameID});    //allows user to provide gameID if that exists, otherwise create a new one for them.
+            console.log('player is trying to create a character with name: ' + character.name)
+            let result = await playerCollection.findOne({ "_id": character.name});    //allows user to provide gameID if that exists, otherwise create a new one for them.
             if (!result) {
-                console.log('no character existed with that name. inserting new character with that name now...')
-                await playerCollection.insertOne({ "_id":gameID, messages: []});
+                await playerCollection.insertOne(character);
             }
-            socket.join(gameID);
-            socket.emit("characterCreated", gameID);    // notifies client that their character is created and passes the character's gameID back to them as a parameter.
-            socket.activeRoom = gameID; // store active room here so we can use it at our will.
-            
-        } catch (e) {
-            console.error(e);
+            //socket.join(gameID);
+            //socket.activeRoom = gameID; // store active room here so we can use it at our will.
+            //No need to insert if character exists
+        }
+        catch(e) {
+            console.error(e)
         }
     });
-
-    // Below is the logic for finding a character in mongoDB then sending that character object back. Currently emmitted in battle.js
     socket.on("findCharacter", async (gameID) => {
         try {
             console.log('Client is attempting to join a battle scene and needs to find his character... lets find one for them..')
