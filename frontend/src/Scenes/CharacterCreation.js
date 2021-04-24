@@ -64,7 +64,7 @@ class CharacterCreation extends Phaser.Scene {
         this.socket.on("joined", async (gameID) => {
             console.log("client joined mongoDB at " + gameID)
             let result = await fetch(`http://localhost:3000/battlelog/${gameID}`, {
-                "Access-Control-Allow-Origin":"http://localhost:5000",
+                "Access-Control-Allow-Origin":"http://localhost:8000",
                 "Content-Type": "application/json"
             })
             .then(response => response.json());
