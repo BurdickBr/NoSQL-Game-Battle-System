@@ -39,14 +39,14 @@ io.on("connection", (socket) => {
             console.error(e);
         }
     });
-    socket.on("message", (message) => {
-        console.log("message sent")
+    socket.on("character", (character) => {
+        console.log("character sent:", character);
         collection.updateOne({ "_id": socket.activeRoom} , {
             "$push": {
-                "messages": message
+                "character": character
             }    
         });
-        io.to(socket.activeRoom).emit("message", message); // this might not be necessary, it's mainly to update the chat for the entire chat room, but that's not a feature we're concerned with.
+        io.to(socket.activeRoom).emit("character", character); // this might not be necessary, it's mainly to update the chat for the entire chat room, but that's not a feature we're concerned with.
     });
 });
 
