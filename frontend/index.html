@@ -81,6 +81,9 @@
                     let chatbox = this.textInput.getChildByName("chat");    // this "chat" name needs to match with the form.html file name convention
                     if(chatbox.value != "") {
                         this.socket.emit("message", chatbox.value);
+                        gameID = chatbox.value;
+                        this.socket.emit("join", gameID);     
+                        console.log('connected to' + gameID)
                         chatbox.value = "";
                     }
                 });
@@ -89,8 +92,7 @@
                 console.log(this.socket)
 
                 //               "join", "gameID" -> gameID should probably match userName.
-                this.socket.emit("join", "things n stuff");     
-                console.log('connected to mongoDB')
+                
                 
                 
                 
