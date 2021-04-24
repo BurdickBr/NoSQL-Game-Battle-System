@@ -5,7 +5,7 @@ class CharacterCreation extends Phaser.Scene {
         this.socket = io("http://localhost:3000", {
                 transports:["websocket","polling","flashsocket"]
             });
-        this.chatMessages = [];
+        this.battleMessages = [];
         this.charCreated = false;
     }
 
@@ -45,20 +45,22 @@ class CharacterCreation extends Phaser.Scene {
         
         this.enterKey.on("down", event => {
             console.log("charCreated:", this.charCreated);
-            let chatbox = this.textInput.getChildByName("chat");    // this "chat" name needs to match with the form.html file name convention
-            if (chatbox.value != "") {
-                let newPlayer = new Player(chatbox.value);
+            let nameBox = this.textInput.getChildByName("chat");    // this "chat" name needs to match with the form.html file name convention
+            if (nameBox.value != "") {
+                let newPlayer = new Player(nameBox.value);
                 this.socket.emit("character", newPlayer); //TODO: SEND PLAYER OBJECT
                 gameID = newPlayer.name;
+                //               "join", "gameID" -> gameID should probably match userName.
                 this.socket.emit("join", gameID);     
                 console.log('connected to ' + gameID)
-                chatbox.value = "";
+                localStorage.setItem("gameID", gameID)  // Now that we have gameID, store it in local storage to retrieve in other scenes.
+                nameBox.value = "";
                 this.charCreated = true;
             }
         });
+        
         this.socket.connect("http://localhost:3000")
         console.log(this.socket)
-        //               "join", "gameID" -> gameID should probably match userName.
         
         this.socket.on("joined", async (gameID) => {
             console.log("client joined mongoDB at " + gameID)
@@ -67,21 +69,21 @@ class CharacterCreation extends Phaser.Scene {
                 "Content-Type": "application/json"
             })
             .then(response => response.json());
-            this.chatMessages = result.messages;
-            this.chatMessages.push("welcome to " + gameID);
-            if(this.chatMessages.length > 20) {
-                this.chatMessages.shift();
+            this.battleMessages = result.messages;
+            this.battleMessages.push("welcome to " + gameID);
+            if(this.battleMessages.length > 20) {
+                this.battleMessages.shift();
             }
             
-            //this.chat.setText(this.chatMessages);
+            //this.chat.setText(this.battleMessages);
         });
 
         this.socket.on("message", (message) => {
-            this.chatMessages.push(message);
-            if (this.chatMessages.length > 20) {
-                this.chatMessages.shift();
+            this.battleMessages.push(message);
+            if (this.battleMessages.length > 20) {
+                this.battleMessages.shift();
             }
-            this.chat.setText(this.chatMessages);
+            this.chat.setText(this.battleMessages);
         });
     }
 
