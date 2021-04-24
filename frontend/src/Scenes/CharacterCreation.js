@@ -61,9 +61,6 @@ class CharacterCreation extends Phaser.Scene {
         console.log(this.socket)
         //               "join", "gameID" -> gameID should probably match userName.
         
-        
-        
-        
         this.socket.on("joined", async (gameID) => {
             console.log("client joined mongoDB at " + gameID)
             let result = await fetch(`http://localhost:3000/battlelog/${gameID}`, {
