@@ -14,7 +14,6 @@ const io = require("socket.io")(http, {
         res.end();
     }
 });
-
 const {MongoClient} = require("mongodb");
 const client = new MongoClient("mongodb+srv://FrontEndUser:pass1234@nosqlgamebattlesystem.6mkqb.mongodb.net/test?retryWrites=true&w=majority");
 const PORT = 3000
@@ -22,11 +21,12 @@ express.use(cors());
 
 var collection;
 
+// On socket.io connection, do some stuff.
 io.on("connection", (socket) => {
     console.log('houston we have a connection')
+    // on join, try to find a collection matching gameID
     socket.on("join", async (gameID) => {
         try {
-            
             let result = await collection.findOne({ "_id": gameID});    //allows user to provide gameID if that exists, otherwise create a new one for them.
             if (!result) {
                 await collection.insertOne({ "_id":gameID, messages: []});
@@ -60,6 +60,7 @@ express.get("/battlelog/:gameID", async (request, response) => {
     }
 });
 
+// Listens for response from our collection on the backend. If the "chat" collection in the "test" db doesn't exist, it should make it.
 http.listen(PORT, async () => {
     try {
         await client.connect();

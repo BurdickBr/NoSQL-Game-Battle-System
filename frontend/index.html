@@ -7,7 +7,7 @@
     <body>
         <div id = "game"></div>
         <script>
-            let socket = null
+            //let socket = null
 
             // game logic
             const phaserConfig = {
@@ -49,10 +49,10 @@
             }
             
             function createScene() {
-                this.textInput = this.add.dom(1135, 690).createFromCache("form").setOrigin(0.5);
+                this.textInput = this.add.dom(600, 400).createFromCache("form").setOrigin(0.5);
                 this.chat = this.add.text(1000, 10, "", {
                     lineSpacing: 15,
-                    backgroundColor: "#21313CDD",
+                    backgroundColor: "#dbdad5",
                     color: "#26924F",
                     padding: 10,
                     fontStyle: "bold"
@@ -61,7 +61,7 @@
                 this.chat.setDepth(1);
                 
                 this.spriteGroup = this.physics.add.group({
-                    defaultKey: "image",
+                defaultKey: "image",
                     maxSize: 15
                 })
                 
@@ -88,14 +88,14 @@
                 this.socket.connect("http://localhost:3000")
                 console.log(this.socket)
 
-                
-                this.socket.emit("join", "mongodb");
+                //               "join", "gameID" -> gameID should probably match userName.
+                this.socket.emit("join", "things n stuff");     
                 console.log('connected to mongoDB')
                 
                 
                 
                 this.socket.on("joined", async (gameID) => {
-                    console.log("client joined mongoDB at gameID")
+                    console.log("client joined mongoDB at " + gameID)
                     let result = await fetch(`http://localhost:3000/battlelog/${gameID}`, {
                         "Access-Control-Allow-Origin":"http://localhost:5000",
                         "Content-Type": "application/json"
