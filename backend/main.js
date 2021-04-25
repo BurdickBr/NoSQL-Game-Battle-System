@@ -92,7 +92,7 @@ io.on("connection", (socket) => {
             }
         });
         console.log('new player health value updated')
-        socket.emit('newPlayerHealth', newHP)
+        //socket.emit('newPlayerHealth', newHP)
     })
 });
 

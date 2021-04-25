@@ -14,7 +14,7 @@ const phaserConfig = {
             gravity: {y: 200 }
         }
     },
-    scene: [CharacterCreation, Battle]
+    scene: [CharacterCreation, Battle, Victory, Loss]
 }
 
 let game = new Phaser.Game(phaserConfig);

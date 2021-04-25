@@ -22,11 +22,11 @@ class Battle extends Phaser.Scene {
         this.load.image('button', './assets/button.png');
         this.load.image('atkButton', './assets/attackButton.png');
         this.load.image('itemButton', './assets/itemButton.png');
-
         this.load.image('SaibaMan', './assets/Saibamen.png');
         this.load.image('Raditz', './assets/Raditz.png');
         this.load.image('Nappa', './assets/Nappa.png');
         this.load.image('Vegeta', './assets/Vegeta.png');
+        this.load.image('player', './assets/goku_cropped.png')
     }
     
     create() {
@@ -68,10 +68,11 @@ class Battle extends Phaser.Scene {
             //this.battleLog.setText('battleLog text goes here')
             this.battleLog.setText(this.battleLogMessages)
         });
-        this.socket.on("newPlayerHP", (newHP) => {
-            console.log('playerHP changed...')
-            this.player.curHP = newHP;
-        });
+        // this is a message intended to recieve new HP value from backend after it's updated in mongoDB
+        // this.socket.on("newPlayerHP", (newHP) => {
+        //     console.log('playerHP changed...')
+        //     this.player.curHP = newHP;
+        // });
 
         //-------------------------------
         //Here starts the UI information|
@@ -123,6 +124,7 @@ class Battle extends Phaser.Scene {
                 console.log('emitted the battle message, and this right button is dope.')
                 this.itemFlag = true;
             })
+        this.add.image(x*0.8, y*0.8, 'player')
 
     }
 
@@ -140,30 +142,17 @@ class Battle extends Phaser.Scene {
 
     update() {
 
+        
         /*
-            Check if Player or Enemy is defeated
+        Battle Logic
         */
-        if(this.curPlayer != null) {
-            if(this.curPlayer.isDead) {
-                //TODO: Player loses screen
-                console.log("Player loses");
-            }
-            if(this.curEnemy.isDead) {
-                //TODO: Player wins screen
-                console.log("Player wins");
-            }
-        }
-
-        /*
-            Battle Logic
-        */
-        if (this.playerTurn) {
-            if(this.atkFlag) {
-                let plyrDmg = this.curPlayer.doAttack();
-                this.curEnemy.adjustHP(plyrDmg * (-1));
-                let battleMessage = new Log(gameID,
-                    this.curPlayer.name + ' attacks ' + this.curEnemy.name
-                    + ' for ' + plyrDmg + ' damage!');
+       if (this.playerTurn) {
+           if(this.atkFlag) {
+               let plyrDmg = this.curPlayer.doAttack();
+               this.curEnemy.adjustHP(plyrDmg * (-1));
+               let battleMessage = new Log(gameID,
+                this.curPlayer.name + ' attacks ' + this.curEnemy.name
+                + ' for ' + plyrDmg + ' damage!');
                 this.socket.emit("battleMessage", battleMessage);
                 this.atkFlag = false;
                 this.playerTurn = false;
@@ -172,11 +161,11 @@ class Battle extends Phaser.Scene {
                 if(!this.curPlayer.useItem()) {
                     this.itemFlag = false;
                     this.socket.emit("battleMessage", 
-                        new Log(gameID, this.curPlayer.name + ' has no more items!'));
+                    new Log(gameID, this.curPlayer.name + ' has no more items!'));
                 }
                 else {
                     this.socket.emit("battleMessage",
-                        new Log(gameID, this.curPlayer.name + ' used an item to heal!'));
+                    new Log(gameID, this.curPlayer.name + ' used an item to heal!'));
                     this.itemFlag = false;
                     this.playerTurn = false;
                 }
@@ -186,18 +175,36 @@ class Battle extends Phaser.Scene {
         else {
             let enemDmg = this.curEnemy.doAttack();
             this.curPlayer.adjustHP(enemDmg * (-1));
-
+            
             // Update battlelog to reflect changes
             let message = new Log(gameID, 
                 this.curEnemy.name + ' attacks ' + this.curPlayer.name 
-                    + ' for ' + enemDmg + ' damage!');
-            this.socket.emit("battleMessage", message);
-
-            //Update player's health in mongoDB
-            //console.log('current player hp: ' + this.curPlayer.curHP)
-            this.socket.emit('playerHealthUpdate', this.curPlayer.curHP)
-            this.playerTurn = true;
+                + ' for ' + enemDmg + ' damage!');
+                this.socket.emit("battleMessage", message);
+                
+                //Update player's health in mongoDB
+                //console.log('current player hp: ' + this.curPlayer.curHP)
+                this.socket.emit('playerHealthUpdate', this.curPlayer.curHP)
+                this.playerTurn = true;
+            }
+            /*
+                Check if Player or Enemy is defeated
+            */
+           if(this.curPlayer != null) {
+               if(this.curPlayer.isDead) {
+                   localStorage.setItem("curPlayer", this.curPlayer)
+                   this.scene.start('lossScene')
+                   //TODO: Player loses screen
+                   //console.log("Player loses");
+               }
+               if(this.curEnemy.isDead) {
+                   localStorage.setItem("curPlayer", this.curPlayer)
+                   this.scene.start('victoryScene')
+                   //TODO: Player wins screen
+                   //console.log("Player wins");
+               }
+           }
+            
         }
-
     }
-}
+    
