@@ -76,7 +76,7 @@ io.on("connection", (socket) => {
         }
     });
     socket.on("battleMessage", (message) => {
-        console.log('active room: ' + socket.activeRoom)
+        //console.log('active room: ' + socket.activeRoom)
         logCollection.updateOne({ "_id": socket.activeRoom} , {
             "$push": {
                 "messages": message
@@ -85,6 +85,15 @@ io.on("connection", (socket) => {
         //io.to(socket.activeRoom).emit("battleLogUpdate", message); // this might not be necessary, it's mainly to update the chat for the entire chat room, but that's not a feature we're concerned with.
         socket.emit("battleLogUpdate", message);
     });
+    socket.on("playerHealthUpdate", (newHP) => {
+        playerCollection.updateOne({ "_id": socket.activeRoom} , {
+            "$set": {
+                "curHP": newHP
+            }
+        });
+        console.log('new player health value updated')
+        socket.emit('newPlayerHealth', newHP)
+    })
 });
 
 express.get("/battlelog/:gameID", async (request, response) => {

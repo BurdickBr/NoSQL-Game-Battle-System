@@ -53,7 +53,7 @@ class Battle extends Phaser.Scene {
             console.log("enemy Doc: ", enemy);
             this.curEnemy = new Enemy(enemy);
             console.log("curEnemy: ", this.curEnemy)
-        })
+        });
         this.socket.on('battleLogUpdate', (message) => {
             console.log('receieved the following message update from mongoDB: ' + message.msg + '\nUpdating battlelog now...');
             this.battleLogMessages.push(message.time + ': ' + message.msg);
@@ -62,6 +62,10 @@ class Battle extends Phaser.Scene {
             }
             //this.battleLog.setText('battleLog text goes here')
             this.battleLog.setText(this.battleLogMessages)
+        });
+        this.socket.on("newPlayerHP", (newHP) => {
+            console.log('playerHP changed...')
+            this.player.curHP = newHP;
         });
 
         //-------------------------------
@@ -74,6 +78,12 @@ class Battle extends Phaser.Scene {
 
         // Battle log box
         //                             position of battlelog box
+        
+        let playerHealthBar = this.makeBar(w * 0.7,h * 0.4,0x2ecc71);
+        this.setValue(playerHealthBar, 100)
+        let enemyHealthBar = this.makeBar(140,100,0xe74c4c);
+        this.setValue(enemyHealthBar, 100)
+        
         this.battleLog = this.add.text(20, h * 0.7, "", {
             lineSpacing: 15,
             backgroundColor: "#21313CDD",
@@ -109,13 +119,18 @@ class Battle extends Phaser.Scene {
                 this.itemFlag = true;
             })
 
+    }
 
-
-        //    this.socket.on("joinBattleScene", async (gameID) => {
-        //         console.log("client joined battle scene at gameID: " + gameID)
-        //         //this.chat.setText(this.chatMessages);
-        //    });
-
+    makeBar(x, y, color) {
+        let bar = this.add.graphics();
+        bar.fillStyle(color, 1);
+        bar.fillRect(0, 0, 250, 30);
+        bar.x = x;
+        bar.y = y;
+        return bar;
+    }
+    setValue(bar, percentage) {
+        bar.scaleX = percentage/100;
     }
 
     update() {
@@ -141,10 +156,10 @@ class Battle extends Phaser.Scene {
             if(this.atkFlag) {
                 let plyrDmg = this.curPlayer.doAttack();
                 this.curEnemy.adjustHP(plyrDmg * (-1));
-                let message = new Log(gameID,
+                let battleMessage = new Log(gameID,
                     this.curPlayer.name + ' attacks ' + this.curEnemy.name
                     + ' for ' + plyrDmg + ' damage!');
-                this.socket.emit("battleMessage", message);
+                this.socket.emit("battleMessage", battleMessage);
                 this.atkFlag = false;
                 this.playerTurn = false;
             }
@@ -166,10 +181,16 @@ class Battle extends Phaser.Scene {
         else {
             let enemDmg = this.curEnemy.doAttack();
             this.curPlayer.adjustHP(enemDmg * (-1));
+
+            // Update battlelog to reflect changes
             let message = new Log(gameID, 
                 this.curEnemy.name + ' attacks ' + this.curPlayer.name 
                     + ' for ' + enemDmg + ' damage!');
             this.socket.emit("battleMessage", message);
+
+            //Update player's health in mongoDB
+            //console.log('current player hp: ' + this.curPlayer.curHP)
+            this.socket.emit('playerHealthUpdate', this.curPlayer.curHP)
             this.playerTurn = true;
         }
 
