@@ -11,8 +11,8 @@ class Player {
     }
 
     doAttack() {
-        atkPercent = Math.random() * (1.2 - 0.6) + 0.6;
-        return this.damage * atkPercent;
+        let atkPercent = Math.random() * (1.2 - 0.6) + 0.6;
+        return Math.round(this.damage * atkPercent);
     }
 
     /*
@@ -38,7 +38,9 @@ class Player {
         if (this.items.length == 0) {
             return false;
         }
-
+        let curItem = this.items.pop();
+        this.adjustHP(curItem.heal);
+        return true;
     }
 
     /*

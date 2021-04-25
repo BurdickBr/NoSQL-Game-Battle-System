@@ -14,8 +14,8 @@ class Enemy {
     }
 
     doAttack() {
-        atkPercent = Math.random() * (1.2 - 0.6) + 0.6;
-        return this.damage * atkPercent;
+        let atkPercent = Math.random() * (1.2 - 0.6) + 0.6;
+        return Math.round(this.damage * atkPercent);
     }
 
     adjustHP(adjHp) {

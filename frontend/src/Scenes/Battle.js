@@ -121,25 +121,41 @@ class Battle extends Phaser.Scene {
         /*
             Battle Logic
         */
-       if (this.playerTurn) {
-           //TODO: Check for attack or item use
-           if(this.atkFlag) {
-
-           }
-           else if(this.itemFlag) {
-
-           }
-       }
-       else {
+        if (this.playerTurn) {
+            if(this.atkFlag) {
+                let plyrDmg = this.curPlayer.doAttack();
+                this.curEnemy.adjustHP(plyrDmg * (-1));
+                let message = new Log(gameID,
+                    this.curPlayer.name + ' attacks ' + this.curEnemy.name
+                    + ' for ' + plyrDmg + ' damage!');
+                this.socket.emit("battleMessage", message);
+                this.atkFlag = false;
+                this.playerTurn = false;
+            }
+            else if(this.itemFlag) {
+                if(!this.curPlayer.useItem()) {
+                    this.itemFlag = false;
+                    this.socket.emit("battleMessage", 
+                        new Log(gameID, this.curPlayer.name + ' has no more items!'));
+                }
+                else {
+                    this.socket.emit("battleMessage",
+                        new Log(gameID, this.curPlayer.name + ' used an item to heal!'));
+                    this.itemFlag = false;
+                    this.playerTurn = false;
+                }
+            }
+        }
+        else {
             //TODO: add to battle log
-            this.curPlayer.adjustHP(
-               this.curEnemy.doAttack() * (-1)
-            );
+            let enemDmg = this.curEnemy.doAttack();
+            this.curPlayer.adjustHP(enemDmg * (-1));
             let message = new Log(gameID, 
-                this.curEnemy.name + ' attacks ' + this.curPlayer.name + '!');
-            
+                this.curEnemy.name + ' attacks ' + this.curPlayer.name 
+                    + ' for ' + enemDmg + ' damage!');
+            this.socket.emit("battleMessage", message);
             this.playerTurn = true;
-       }
+        }
 
     }
 }
