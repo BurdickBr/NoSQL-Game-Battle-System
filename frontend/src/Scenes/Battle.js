@@ -11,7 +11,10 @@ class Battle extends Phaser.Scene {
     init() {
         this.socket.connect("http://localhost:3000")
         this.battleLogMessages = [];
-        this.enemies = ["MeanMan", "ReallyMeanMan"];
+        this.enemies = ["SaibaMan", "Raditz", "Nappa", "Vegeta"];
+        this.randEnemy = this.enemies[
+            0 //TODO: Make Random
+        ];
         this.playerTurn = true;
         this.curPlayer = null;
     }
@@ -38,7 +41,7 @@ class Battle extends Phaser.Scene {
             Socket Emits
         */
         this.socket.emit('findCharacter', gameID)
-        this.socket.emit('findEnemy', this.enemies[0]);
+        this.socket.emit('findEnemy', this.randEnemy);
 
         /*
             Sockets listening on
@@ -102,6 +105,9 @@ class Battle extends Phaser.Scene {
         this.battleLog.setDepth(1);                     // bring it to the front of the screen
 
 
+        /*
+            Buttons
+        */
         this.add.image(x * 0.7, y * 0.2, 'atkButton')
             .setScale(0.2)
             .setInteractive()
@@ -124,7 +130,15 @@ class Battle extends Phaser.Scene {
                 console.log('emitted the battle message, and this right button is dope.')
                 this.itemFlag = true;
             })
+<<<<<<< Updated upstream
         this.add.image(x*0.8, y*0.8, 'player')
+=======
+        
+        /*
+            Enemy Image
+        */
+        this.add.image(x * 0.2, y * 0.2, this.randEnemy).setScale(0.2);
+>>>>>>> Stashed changes
 
     }
 
