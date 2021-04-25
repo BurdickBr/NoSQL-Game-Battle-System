@@ -13,7 +13,7 @@ class Battle extends Phaser.Scene {
         this.battleLogMessages = [];
         this.enemies = ["SaibaMan", "Raditz", "Nappa", "Vegeta"];
         this.randEnemy = this.enemies[
-            0 //TODO: Make Random
+            1//Math.floor(Math.random() * this.enemies.length)
         ];
         this.playerTurn = true;
         this.curPlayer = null;
@@ -112,11 +112,6 @@ class Battle extends Phaser.Scene {
             .setScale(0.2)
             .setInteractive()
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-                let message = new Log(gameID, 'Player performed attack by clicking left button.');
-                console.log("attack message: ", message);
-                console.log('emitting a message from left button click on this socket: ', this.socket)
-                this.socket.emit('battleMessage', message)
-                console.log('emitted the battle message, and this left button is sick.')
                 this.atkFlag = true;
             });
         
@@ -124,10 +119,6 @@ class Battle extends Phaser.Scene {
             .setScale(0.2)
             .setInteractive()
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-                let message = new Log(gameID, 'Player performed item effect by clicking right button.');
-                console.log('emitting a message from left button click on this socket: ', this.socket)
-                this.socket.emit('battleMessage', message)
-                console.log('emitted the battle message, and this right button is dope.')
                 this.itemFlag = true;
             })
         
