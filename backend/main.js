@@ -55,6 +55,16 @@ io.on("connection", (socket) => {
             console.error(e);
         }
     });
+    socket.on("battleMessage", (message) => {
+        console.log('active room: ' + socket.activeRoom)
+        playerCollection.updateOne({ "_id": socket.activeRoom} , {
+            "$push": {
+                "messages": message
+            }    
+        });
+        //io.to(socket.activeRoom).emit("battleLogUpdate", message); // this might not be necessary, it's mainly to update the chat for the entire chat room, but that's not a feature we're concerned with.
+        socket.emit("battleLogUpdate", message);
+    });
 });
 
 express.get("/battlelog/:gameID", async (request, response) => {

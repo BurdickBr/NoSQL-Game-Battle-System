@@ -15,16 +15,7 @@ class CharacterCreation extends Phaser.Scene {
     }
 
     create() {
-        this.textInput = this.add.dom(600, 400).createFromCache("form").setOrigin(0.5);
-        this.chat = this.add.text(1000, 10, "", {
-            lineSpacing: 15,
-            backgroundColor: "#dbdad5",
-            color: "#26924F",
-            padding: 10,
-            fontStyle: "bold"
-        });
-        this.chat.setFixedSize(270, 645);
-        this.chat.setDepth(1);
+        this.textInput = this.add.dom(game.config.width * 0.5, game.config.height * 0.8).createFromCache("form").setOrigin(0.5);
         
         this.spriteGroup = this.physics.add.group({
         defaultKey: "tien",

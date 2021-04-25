@@ -2,9 +2,9 @@
 const phaserConfig = {
     type: Phaser.AUTO,
     parent: "game",
-    width: 1280,
-    height: 720,
-    backgroundColor: "#E7F6EF",
+    width: 1860,
+    height: 900,
+    backgroundColor: "#E28743",
     dom: {
         createContainer: true
     },
