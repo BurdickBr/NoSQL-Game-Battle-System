@@ -22,6 +22,11 @@ class Battle extends Phaser.Scene {
         this.load.image('button', './assets/button.png');
         this.load.image('atkButton', './assets/attackButton.png');
         this.load.image('itemButton', './assets/itemButton.png');
+
+        this.load.image('SaibaMan', './assets/Saibamen.png');
+        this.load.image('Raditz', './assets/Raditz.png');
+        this.load.image('Nappa', './assets/Nappa.png');
+        this.load.image('Vegeta', './assets/Vegeta.png');
     }
     
     create() {
