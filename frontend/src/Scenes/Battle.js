@@ -29,7 +29,7 @@ class Battle extends Phaser.Scene {
         this.load.image('Raditz', './assets/Raditz.png');
         this.load.image('Nappa', './assets/Nappa.png');
         this.load.image('Vegeta', './assets/Vegeta.png');
-        this.load.image('player', './assets/goku_cropped.png')
+        this.load.image('player', './assets/goku.png')
     }
     
     create() {
@@ -134,12 +134,12 @@ class Battle extends Phaser.Scene {
         /*
             Player Image
         */
-        this.add.image(x*0.8, y*0.8, 'player')
+        this.add.image(x*0.8, y*0.88, 'player')
         
         /*
             Enemy Image
         */
-        this.add.image(x * 0.2, y * 0.2, this.randEnemy).setScale(0.2);
+        this.add.image(x * 0.2, y * 0.4, this.randEnemy);
 
     }
 
