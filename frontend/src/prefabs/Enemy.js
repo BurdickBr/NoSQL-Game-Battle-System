@@ -3,6 +3,7 @@ class Enemy {
         enemy argument will be a mongodb document
     */
     constructor(enemy) {
+        this._id = enemy._id;
         this.name = enemy.name;
         this.maxHP = enemy.maxHP;
         this.curHP = enemy.curHP;

@@ -64,6 +64,17 @@ io.on("connection", (socket) => {
             console.error(e);
         }
     });
+    socket.on("findEnemy", async (enemy) => {
+        try {
+            console.log("findEnemy: ", enemy);
+            let newEnemy = await enemyCollection.findOne({"_id": enemy});
+            console.log("Found Enemy: ", newEnemy);
+            socket.emit("receiveEnemy", newEnemy);
+        }
+        catch(e) {
+            console.error(e);
+        }
+    });
     socket.on("battleMessage", (message) => {
         console.log('active room: ' + socket.activeRoom)
         logCollection.updateOne({ "_id": socket.activeRoom} , {
@@ -92,6 +103,7 @@ http.listen(PORT, async () => {
         await client.connect();
         logCollection = client.db("test").collection("Log");
         playerCollection = client.db("test").collection("Player");
+        enemyCollection = client.db("test").collection("Enemy");
         console.log("Listenting on port: %s", http.address().port);  //should be listening on port 3000 
     } catch (e) {
         console.error(e)

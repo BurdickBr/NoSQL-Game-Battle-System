@@ -11,6 +11,8 @@ class Battle extends Phaser.Scene {
     init() {
         this.socket.connect("http://localhost:3000")
         this.battleLogMessages = [];
+        this.enemies = ["MeanMan", "ReallyMeanMan"];
+        this.playerTurn = true;
     }
 
 
@@ -22,18 +24,19 @@ class Battle extends Phaser.Scene {
     }
     
     create() {
-        /*
-        TODO: create buttons, images, display box
-        for stats, and battle log.
-        Should start by grabbing the current player
-        from the Player collection using gameID
-        */
-
         // socket.io connection logic, getting character information setup
         const gameID = localStorage.getItem("gameID")
         console.log('Battle.js gameID: ' + gameID)           // retrieve gameID from local storage stored on user's browser.
-        this.socket.emit('findCharacter', gameID)
 
+        /*
+            Socket Emits
+        */
+        this.socket.emit('findCharacter', gameID)
+        this.socket.emit('findEnemy', this.enemies[0]);
+
+        /*
+            Sockets listening on
+        */
         this.socket.on('receiveCharacter', (player) => {
             console.log("curPlayer Doc:", player);
             this.curPlayer = Player.docToPlayer(player);
@@ -45,6 +48,11 @@ class Battle extends Phaser.Scene {
             }
             
         });
+        this.socket.on('receiveEnemy', (enemy) => {
+            console.log("enemy Doc: ", enemy);
+            this.curEnemy = new Enemy(enemy);
+            console.log("curEnemy: ", this.curEnemy)
+        })
         this.socket.on('battleLogUpdate', (message) => {
             console.log('receieved the following message update from mongoDB: ' + message.msg + '\nUpdating battlelog now...');
             this.battleLogMessages.push(message.time + ': ' + message.msg);
