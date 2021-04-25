@@ -1,3 +1,7 @@
 class Item {
-    //TODO: Finish Item class
+    //TODO: Make document friendly
+    constructor(name = 'Senzu Bean') {
+        this.name = name;
+        this.heal = 25;
+    }
 }

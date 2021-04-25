@@ -94,7 +94,8 @@ class Battle extends Phaser.Scene {
                 console.log('emitting a message from left button click on this socket: ', this.socket)
                 this.socket.emit('battleMessage', message)
                 console.log('emitted the battle message, and this left button is sick.')
-            })
+                this.atkFlag = true;
+            });
         
         this.add.image(x * 0.9, y * 0.2, 'itemButton')
             .setScale(0.2)
@@ -104,6 +105,7 @@ class Battle extends Phaser.Scene {
                 console.log('emitting a message from left button click on this socket: ', this.socket)
                 this.socket.emit('battleMessage', message)
                 console.log('emitted the battle message, and this right button is dope.')
+                this.itemFlag = true;
             })
 
 
@@ -116,6 +118,28 @@ class Battle extends Phaser.Scene {
     }
 
     update() {
-        //TODO: Check battle buttons
+        /*
+            Battle Logic
+        */
+       if (this.playerTurn) {
+           //TODO: Check for attack or item use
+           if(this.atkFlag) {
+
+           }
+           else if(this.itemFlag) {
+
+           }
+       }
+       else {
+            //TODO: add to battle log
+            this.curPlayer.adjustHP(
+               this.curEnemy.doAttack() * (-1)
+            );
+            let message = new Log(gameID, 
+                this.curEnemy.name + ' attacks ' + this.curPlayer.name + '!');
+            
+            this.playerTurn = true;
+       }
+
     }
 }
