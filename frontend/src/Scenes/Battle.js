@@ -130,15 +130,16 @@ class Battle extends Phaser.Scene {
                 console.log('emitted the battle message, and this right button is dope.')
                 this.itemFlag = true;
             })
-<<<<<<< Updated upstream
+        
+        /*
+            Player Image
+        */
         this.add.image(x*0.8, y*0.8, 'player')
-=======
         
         /*
             Enemy Image
         */
         this.add.image(x * 0.2, y * 0.2, this.randEnemy).setScale(0.2);
->>>>>>> Stashed changes
 
     }
 
