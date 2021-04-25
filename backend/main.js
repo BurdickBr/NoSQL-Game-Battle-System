@@ -40,6 +40,15 @@ io.on("connection", (socket) => {
             console.error(e)
         }
     });
+    socket.on("createLog", async (gameID) => {
+        try {
+            console.log("Creating new log ", gameID);
+            await logCollection.insertOne({"_id": gameID});
+        }
+        catch(e) {
+            console.error(e);
+        }
+    });
     socket.on("findCharacter", async (gameID) => {
         try {
             console.log('Client is attempting to join a battle scene and needs to find his character... lets find one for them..')
@@ -57,7 +66,7 @@ io.on("connection", (socket) => {
     });
     socket.on("battleMessage", (message) => {
         console.log('active room: ' + socket.activeRoom)
-        playerCollection.updateOne({ "_id": socket.activeRoom} , {
+        logCollection.updateOne({ "_id": socket.activeRoom} , {
             "$push": {
                 "messages": message
             }    
@@ -81,7 +90,7 @@ express.get("/battlelog/:gameID", async (request, response) => {
 http.listen(PORT, async () => {
     try {
         await client.connect();
-        logCollection = client.db("test").collection("chat");
+        logCollection = client.db("test").collection("Log");
         playerCollection = client.db("test").collection("Player");
         console.log("Listenting on port: %s", http.address().port);  //should be listening on port 3000 
     } catch (e) {

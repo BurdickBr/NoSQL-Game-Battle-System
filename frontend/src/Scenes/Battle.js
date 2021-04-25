@@ -85,7 +85,7 @@ class Battle extends Phaser.Scene {
                 console.log('emitted the battle message, and this left button is sick.')
             })
         
-            this.add.image(x * 0.9, y * 0.2, 'button')
+        this.add.image(x * 0.9, y * 0.2, 'button')
             .setScale(0.2)
             .setInteractive()
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {

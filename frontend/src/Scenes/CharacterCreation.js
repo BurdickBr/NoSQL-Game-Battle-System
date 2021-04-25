@@ -39,8 +39,9 @@ class CharacterCreation extends Phaser.Scene {
             let nameBox = this.textInput.getChildByName("chat");    // this "chat" name needs to match with the form.html file name convention
             if (nameBox.value != "") {
                 let newPlayer = new Player(nameBox.value);
-                await this.socket.emit("createCharacter", newPlayer); //TODO: SEND PLAYER OBJECT   
+                await this.socket.emit("createCharacter", newPlayer); 
                 gameID = newPlayer.name;
+                await this.socket.emit("createLog", gameID);
                 console.log('connected to ' + gameID)
                 localStorage.setItem("gameID", gameID)  // Now that we have gameID, store it in local storage to retrieve in other scenes.
                 nameBox.value = "";
