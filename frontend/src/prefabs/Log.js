@@ -1,7 +1,8 @@
 class Log {
-    constructor(actionId) {
-        this.msg = ''; //TODO: Figure out best way to form msg
-        this.time = new Date().toString();
+    constructor(actionId, msg) {
+        this.msg = msg; //TODO: Figure out best way to form msg
+        let curTime = new Date();
+        this.time = curTime.toLocaleDateString() + ' ' + curTime.toLocaleTimeString();
         this.actionId = actionId;
     }
 }

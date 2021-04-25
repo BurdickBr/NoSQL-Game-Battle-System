@@ -16,7 +16,9 @@ class Battle extends Phaser.Scene {
 
     preload() {
         //TODO: preload
-        this.load.image('button', 'button.png')
+        this.load.image('button', './assets/button.png');
+        this.load.image('atkButton', './assets/attackButton.png');
+        this.load.image('itemButton', './assets/itemButton.png');
     }
     
     create() {
@@ -44,8 +46,8 @@ class Battle extends Phaser.Scene {
             
         });
         this.socket.on('battleLogUpdate', (message) => {
-            console.log('receieved the following message update from mongoDB: ' + message + '\nUpdating battlelog now...');
-            this.battleLogMessages.push(message);
+            console.log('receieved the following message update from mongoDB: ' + message.msg + '\nUpdating battlelog now...');
+            this.battleLogMessages.push(message.time + ': ' + message.msg);
             if(this.battleLogMessages.length > 7) {
                 this.battleLogMessages.shift()
             }
@@ -75,21 +77,22 @@ class Battle extends Phaser.Scene {
         this.battleLog.setDepth(1);                     // bring it to the front of the screen
 
 
-        this.add.image(x * 0.7, y * 0.2, 'button')
+        this.add.image(x * 0.7, y * 0.2, 'atkButton')
             .setScale(0.2)
             .setInteractive()
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-                let message = 'Player performed attack by clicking left button.'
+                let message = new Log(gameID, 'Player performed attack by clicking left button.');
+                console.log("attack message: ", message);
                 console.log('emitting a message from left button click on this socket: ', this.socket)
                 this.socket.emit('battleMessage', message)
                 console.log('emitted the battle message, and this left button is sick.')
             })
         
-        this.add.image(x * 0.9, y * 0.2, 'button')
+        this.add.image(x * 0.9, y * 0.2, 'itemButton')
             .setScale(0.2)
             .setInteractive()
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-                let message = 'Player performed item effect by clicking right button.'
+                let message = new Log(gameID, 'Player performed item effect by clicking right button.');
                 console.log('emitting a message from left button click on this socket: ', this.socket)
                 this.socket.emit('battleMessage', message)
                 console.log('emitted the battle message, and this right button is dope.')

@@ -11,7 +11,7 @@ class CharacterCreation extends Phaser.Scene {
 
     preload() {
         this.load.html("form", "form.html");
-        this.load.image("tien", "tien.jpg");
+        this.load.image("tien", "./assets/tien.jpg");
     }
 
     create() {
