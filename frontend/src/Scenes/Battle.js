@@ -13,6 +13,7 @@ class Battle extends Phaser.Scene {
         this.battleLogMessages = [];
         this.enemies = ["MeanMan", "ReallyMeanMan"];
         this.playerTurn = true;
+        this.curPlayer = null;
     }
 
 
@@ -118,6 +119,21 @@ class Battle extends Phaser.Scene {
     }
 
     update() {
+
+        /*
+            Check if Player or Enemy is defeated
+        */
+        if(this.curPlayer != null) {
+            if(this.curPlayer.isDead) {
+                //TODO: Player loses screen
+                console.log("Player loses");
+            }
+            if(this.curEnemy.isDead) {
+                //TODO: Player wins screen
+                console.log("Player wins");
+            }
+        }
+
         /*
             Battle Logic
         */
@@ -146,8 +162,8 @@ class Battle extends Phaser.Scene {
                 }
             }
         }
+        // Enemy Turn
         else {
-            //TODO: add to battle log
             let enemDmg = this.curEnemy.doAttack();
             this.curPlayer.adjustHP(enemDmg * (-1));
             let message = new Log(gameID, 
