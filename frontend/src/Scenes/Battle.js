@@ -19,6 +19,7 @@ class Battle extends Phaser.Scene {
         this.curPlayer = null;
         this.enemyHealthBar = null;
         this.playerHealthBar = null;
+        this.playerStatsBox = false;
         console.log("Battle init()");
     }
 
@@ -120,6 +121,17 @@ class Battle extends Phaser.Scene {
         this.battleLog.setDepth(1);                     // bring it to the front of the screen
 
 
+
+        /*
+            Player Name and Experience text box
+        */
+        this.playerStatsTextbox = this.add.text(w * 0.9, h * 0.6, "", {
+            lineSpacing: 15,
+            backgroundColor: "#21313CDD",
+            color: "#26924F",
+            padding: 10,
+            fontStyle: "bold"
+        });
         /*
             Buttons
         */
@@ -231,6 +243,11 @@ class Battle extends Phaser.Scene {
                 localStorage.setItem("curPlayer", this.curPlayer);
                 this.scene.start('victoryScene');
                 //this.scene.stop();
+            }
+            if(!this.playerStatsBox) {
+                this.playerStatsTextbox.setText("Player: " + this.curPlayer.name + 
+                        '\nExperience: ' + this.curPlayer.exp)
+                this.playerStatsBox = true;
             }
         }
             
