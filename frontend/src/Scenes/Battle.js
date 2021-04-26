@@ -18,9 +18,13 @@ class Battle extends Phaser.Scene {
         this.playerTurn = true;
         this.curPlayer = null;
         this.enemyHealthBar = null;
+        this.enemyHealthTextBox = null;
         this.playerHealthBar = null;
+        this.playerHealthTextbox = null;
         this.initHealthBar = false;
         this.playerStatsBox = false;
+        this.playerHealthReceived = false;
+        this.enemyHealthReceived = false;
         console.log("Battle init()");
     }
 
@@ -62,7 +66,9 @@ class Battle extends Phaser.Scene {
                 var playerRecieved = true;
                 if (playerRecieved) {
                     console.log('received player information: ', player)
-                    this.battleLog.setText(player.messages)
+                    this.playerHealthReceived = true
+                    this.battleLog.setText(player.messages);
+                    //this.playerHealthTextBox.setText(this.curPlayer.curHP)
                 }
                     
             });
@@ -70,6 +76,7 @@ class Battle extends Phaser.Scene {
                 console.log("enemy Doc: ", enemy);
                 this.curEnemy = new Enemy(enemy);
                 console.log("curEnemy: ", this.curEnemy)
+                this.enemyHealthReceived = true;
             });
         //}
         this.socket.on('battleLogUpdate', (message) => {
@@ -102,14 +109,29 @@ class Battle extends Phaser.Scene {
         var x = w;
         var y = h;
 
-        // Battle log box
-        //                                  position of battlelog box
+        // create player & enemy health bars
+        console.log('making player health bar')
         this.playerHealthBar = this.makeBar(w * 0.7,h * 0.4,0x2ecc71);
+        this.playerHealthTextbox = this.add.text(w * 0.7, h * 0.35, "", {
+            lineSpacing: 15,
+            backgroundColor: "#DD",
+            color: "#26924F",
+            padding: 10,
+            fontStyle: "bold"
+        });
+
         //this.setValue(this.playerHealthBar, 100);
         this.enemyHealthBar = this.makeBar(140,100,0xe74c4c);
+        this.enemyHealthTextbox = this.add.text(140, 50, '', {
+            lineSpacing: 15,
+            backgroundColor: "#DD",
+            color: "#26924F",
+            padding: 10,
+            fontStyle: "bold"
+        });
         this.setValue(this.enemyHealthBar, 100)
         
-        this.battleLog = this.add.text(20, h * 0.7, "", {
+        this.battleLog = this.add.text(20, h * 0.7, "things n stuff", {
             lineSpacing: 15,
             backgroundColor: "#21313CDD",
             color: "#26924F",
@@ -168,6 +190,8 @@ class Battle extends Phaser.Scene {
         let bar = this.add.graphics();
         bar.fillStyle(color, 1);
         bar.fillRect(0, 0, 250, 30);
+        bar.lineStyle(2,0x000000,1);
+        bar.strokeRect(0,0,250,30);
         bar.x = x;
         bar.y = y;
         return bar;
@@ -185,6 +209,7 @@ class Battle extends Phaser.Scene {
                let plyrDmg = this.curPlayer.doAttack();
                this.curEnemy.adjustHP(plyrDmg * (-1));
                this.setValue(this.enemyHealthBar, this.curEnemy.percentHealth());
+               this.enemyHealthTextbox.setText('HP: ' + this.curEnemy.curHP)
                let battleMessage = new Log(gameID,
                 this.curPlayer.name + ' attacks ' + this.curEnemy.name
                 + ' for ' + plyrDmg + ' damage!');
@@ -212,6 +237,7 @@ class Battle extends Phaser.Scene {
             let enemDmg = this.curEnemy.doAttack();
             this.curPlayer.adjustHP(enemDmg * (-1));
             this.setValue(this.playerHealthBar, this.curPlayer.percentHealth());
+            this.playerHealthTextbox.setText('HP: ' + this.curPlayer.curHP)
             
             // Update battlelog to reflect changes
             let message = new Log(gameID, 
@@ -251,6 +277,7 @@ class Battle extends Phaser.Scene {
                 }
                 this.socket.emit("playerXPUpdate", this.curPlayer.exp, this.curPlayer.hiExp);
                 localStorage.setItem("curPlayer", this.curPlayer);
+                localStorage.setItem("xpEarned", this.curEnemy.exp);
                 async () => {await new Promise(r => setTimeout(r, 100));};
                 this.scene.start('victoryScene');
                 //this.scene.stop();
@@ -265,7 +292,21 @@ class Battle extends Phaser.Scene {
                 this.initHealthBar = true;
             }
         }
-            
+        
+        // below is dumb logic necessary to display health values on build.
+        // because rtt for socket.io messages takes longer to receive than it does to initially
+        // build the healthbars. so the bar attempts to initialize health values but cur.Player and 
+        // cur.enemy are null still (since there's no player/enemy recieved yet).
+        if(this.playerHealthReceived)
+        {
+            this.playerHealthTextbox.setText('HP: '+ this.curPlayer.curHP)
+            this.playerHealthRecieved = false;
+        }
+        if(this.enemyHealthReceived && this.curEnemy != null)
+        {
+            this.enemyHealthTextbox.setText('HP: ' + this.curEnemy.curHP)
+            this.enemyHealthReceived = false;
+        }
         }
     }
     

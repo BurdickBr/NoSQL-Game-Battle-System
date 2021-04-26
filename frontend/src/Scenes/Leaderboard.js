@@ -23,6 +23,7 @@ class Leaderboard extends Phaser.Scene {
     preload() {
         this.load.image('leaderboardBackground', './assets/leaderboard.png');
         this.load.image('characterCreationButton', './assets/characterCreationButton.png');
+        //this.load.image('continueButton', './assets/continueButton.png')
     }
 
     create() {
