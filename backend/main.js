@@ -95,7 +95,15 @@ io.on("connection", (socket) => {
         });
         console.log('new player health value updated')
         //socket.emit('newPlayerHealth', newHP)
-    })
+    });
+    socket.on("playerXPUpdate", (xp) => {
+        playerCollection.updateOne({ "_id": socket.activeRoom} , {
+            "$set": {
+                "exp": xp
+            }
+        });
+        console.log('player experience updated');
+    });
 });
 
 express.get("/battlelog/:gameID", async (request, response) => {

@@ -8,7 +8,7 @@ class Enemy {
         this.maxHP = enemy.maxHP;
         this.curHP = enemy.curHP;
         this.damage = enemy.damage;
-        this.exp = enemy.exp;
+        this.exp = parseInt(enemy.exp);
         this.isDead = false;
         this.img = enemy.img;
     }

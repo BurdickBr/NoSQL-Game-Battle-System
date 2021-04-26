@@ -12,9 +12,12 @@ class CharacterCreation extends Phaser.Scene {
     preload() {
         this.load.html("form", "form.html");
         this.load.image("tien", "./assets/tien.jpg");
+        this.load.image("roshiBackground", './assets/masterRoshiHouse.png');
     }
 
     create() {
+        this.add.image(game.config.width / 2, game.config.height / 2, 'roshiBackground').setDepth(-1).setScale(.62);
+
         this.textInput = this.add.dom(game.config.width * 0.5, game.config.height * 0.8).createFromCache("form").setOrigin(0.5);
         
         this.spriteGroup = this.physics.add.group({
