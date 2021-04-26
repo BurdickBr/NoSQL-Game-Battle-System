@@ -95,16 +95,17 @@ io.on("connection", (socket) => {
         console.log('new player health value updated')
         //socket.emit('newPlayerHealth', newHP)
     });
-    socket.on("playerXPUpdate", (xp) => {
+    socket.on("playerXPUpdate", (xp, hiXp) => {
         playerCollection.updateOne({ "_id": socket.activeRoom} , {
             "$set": {
-                "exp": xp
+                "exp": xp,
+                "hiExp": hiXp
             }
         });
         console.log('player experience updated');
     });
     socket.on('getLeaderboards', async () => {
-        let result = await playerCollection.find().sort({'exp':-1}).limit(5).toArray();
+        let result = await playerCollection.find().sort({'hiExp':-1}).limit(5).toArray();
         console.log(result);    
         socket.emit('sendLeaderboards', result)
 

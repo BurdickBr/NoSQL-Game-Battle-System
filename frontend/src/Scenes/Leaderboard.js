@@ -67,7 +67,7 @@ class Leaderboard extends Phaser.Scene {
             this.expLeaderBoardValues = [this.expLeaderBoardLineOne, this.leaderBoardLineTwo]
             for(var i = 0; i < 5; i++){
                 this.nameLeaderBoardValues.push(top5[i].name)
-                this.expLeaderBoardValues.push(top5[i].exp)
+                this.expLeaderBoardValues.push(top5[i].hiExp)
             }
             this.nameLeaderBoard.setText(this.nameLeaderBoardValues)
             this.expLeaderBoard.setText(this.expLeaderBoardValues)

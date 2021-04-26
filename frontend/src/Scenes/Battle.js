@@ -228,11 +228,14 @@ class Battle extends Phaser.Scene {
         */
         if(this.curPlayer != null && this.curEnemy != null) {
             if(this.curPlayer.isDead) {
+                if (this.curPlayer.exp > this.curPlayer.hiExp) {
+                    this.curPlayer.hiExp = this.curPlayer.exp;
+                }
                 this.curPlayer.curHP = this.curPlayer.maxHP;
                 this.curPlayer.exp = 0;
                 this.isDead = false;
                 this.socket.emit("playerHealthUpdate", this.curPlayer.maxHP);
-                this.socket.emit("playerXPUpdate", 0);
+                this.socket.emit("playerXPUpdate", 0, this.curPlayer.hiExp);
                localStorage.setItem("curPlayer", this.curPlayer);
                
                this.scene.start('lossScene');
@@ -241,7 +244,10 @@ class Battle extends Phaser.Scene {
             }
             if(this.curEnemy.isDead) {
                 this.curPlayer.exp += this.curEnemy.exp;
-                this.socket.emit("playerXPUpdate", this.curPlayer.exp);
+                if (this.curPlayer.exp > this.curPlayer.hiExp) {
+                    this.curPlayer.hiExp = this.curPlayer.exp;
+                }
+                this.socket.emit("playerXPUpdate", this.curPlayer.exp, this.curPlayer.hiExp);
                 localStorage.setItem("curPlayer", this.curPlayer);
                 this.scene.start('victoryScene');
                 //this.scene.stop();

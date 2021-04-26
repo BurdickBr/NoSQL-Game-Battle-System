@@ -6,6 +6,7 @@ class Player {
         this.curHP = this.maxHP;
         this.damage = 15;
         this.exp = 0;
+        this.hiExp = 0;
         this.items = [new Item(), new Item(), new Item()];
         this.isDead = false;
     }
@@ -56,6 +57,7 @@ class Player {
         newPlayer.curHP = docPlayer.curHP;
         newPlayer.damage = docPlayer.damage;
         newPlayer.exp = docPlayer.exp;
+        newPlayer.hiExp = docPlayer.hiExp;
         newPlayer.items = docPlayer.items;
         return newPlayer;
     }
