@@ -13,10 +13,13 @@ class Battle extends Phaser.Scene {
         this.battleLogMessages = [];
         this.enemies = ["SaibaMan", "Raditz", "Nappa", "Vegeta"];
         this.randEnemy = this.enemies[
-            1//Math.floor(Math.random() * this.enemies.length)
+            Math.floor(Math.random() * this.enemies.length)
         ];
         this.playerTurn = true;
         this.curPlayer = null;
+        this.enemyHealthBar = null;
+        this.playerHealthBar = null;
+        console.log("Battle init()");
     }
 
 
@@ -30,38 +33,43 @@ class Battle extends Phaser.Scene {
         this.load.image('Nappa', './assets/Nappa.png');
         this.load.image('Vegeta', './assets/Vegeta.png');
         this.load.image('player', './assets/goku.png')
+        this.load.image('background', './assets/namekBG.png');
     }
     
     create() {
+        this.add.image(game.config.width / 2, game.config.height / 2, 'background').setDepth(-1).setScale(1.87);
+        console.log("Battle create()");
         // socket.io connection logic, getting character information setup
         const gameID = localStorage.getItem("gameID")
         console.log('Battle.js gameID: ' + gameID)           // retrieve gameID from local storage stored on user's browser.
 
-        /*
-            Socket Emits
-        */
-        this.socket.emit('findCharacter', gameID)
-        this.socket.emit('findEnemy', this.randEnemy);
-
-        /*
-            Sockets listening on
-        */
-        this.socket.on('receiveCharacter', (player) => {
-            console.log("curPlayer Doc:", player);
-            this.curPlayer = Player.docToPlayer(player);
-            console.log('curPlayer Obj:', this.curPlayer);
-            var playerRecieved = true;
-            if (playerRecieved) {
-                console.log('received player information: ', player)
-                this.battleLog.setText(player.messages)
-            }
-            
-        });
-        this.socket.on('receiveEnemy', (enemy) => {
-            console.log("enemy Doc: ", enemy);
-            this.curEnemy = new Enemy(enemy);
-            console.log("curEnemy: ", this.curEnemy)
-        });
+        //if (roundCount++ == 0)  {
+            /*
+                Socket Emits
+            */
+            this.socket.emit('findCharacter', gameID)
+            this.socket.emit('findEnemy', this.randEnemy);
+        
+            /*
+                Sockets listening on
+            */
+            this.socket.on('receiveCharacter', (player) => {
+                console.log("curPlayer Doc:", player);
+                this.curPlayer = Player.docToPlayer(player);
+                console.log('curPlayer Obj:', this.curPlayer);
+                var playerRecieved = true;
+                if (playerRecieved) {
+                    console.log('received player information: ', player)
+                    this.battleLog.setText(player.messages)
+                }
+                    
+            });
+            this.socket.on('receiveEnemy', (enemy) => {
+                console.log("enemy Doc: ", enemy);
+                this.curEnemy = new Enemy(enemy);
+                console.log("curEnemy: ", this.curEnemy)
+            });
+        //}
         this.socket.on('battleLogUpdate', (message) => {
             console.log('receieved the following message update from mongoDB: ' + message.msg + '\nUpdating battlelog now...');
             this.battleLogMessages.push(message.time + ': ' + message.msg);
@@ -71,6 +79,8 @@ class Battle extends Phaser.Scene {
             //this.battleLog.setText('battleLog text goes here')
             this.battleLog.setText(this.battleLogMessages)
         });
+
+       
         // this is a message intended to recieve new HP value from backend after it's updated in mongoDB
         // this.socket.on("newPlayerHP", (newHP) => {
         //     console.log('playerHP changed...')
@@ -88,10 +98,10 @@ class Battle extends Phaser.Scene {
         // Battle log box
         //                             position of battlelog box
         
-        let playerHealthBar = this.makeBar(w * 0.7,h * 0.4,0x2ecc71);
-        this.setValue(playerHealthBar, 100)
-        let enemyHealthBar = this.makeBar(140,100,0xe74c4c);
-        this.setValue(enemyHealthBar, 100)
+        this.playerHealthBar = this.makeBar(w * 0.7,h * 0.4,0x2ecc71);
+        this.setValue(this.playerHealthBar, 100);
+        this.enemyHealthBar = this.makeBar(140,100,0xe74c4c);
+        this.setValue(this.enemyHealthBar, 100)
         
         this.battleLog = this.add.text(20, h * 0.7, "", {
             lineSpacing: 15,
@@ -147,8 +157,6 @@ class Battle extends Phaser.Scene {
     }
 
     update() {
-
-        
         /*
         Battle Logic
         */
@@ -156,6 +164,7 @@ class Battle extends Phaser.Scene {
            if(this.atkFlag) {
                let plyrDmg = this.curPlayer.doAttack();
                this.curEnemy.adjustHP(plyrDmg * (-1));
+               this.setValue(this.enemyHealthBar, this.curEnemy.percentHealth());
                let battleMessage = new Log(gameID,
                 this.curPlayer.name + ' attacks ' + this.curEnemy.name
                 + ' for ' + plyrDmg + ' damage!');
@@ -170,6 +179,7 @@ class Battle extends Phaser.Scene {
                     new Log(gameID, this.curPlayer.name + ' has no more items!'));
                 }
                 else {
+                    this.setValue(this.playerHealthBar, this.curPlayer.percentHealth());
                     this.socket.emit("battleMessage",
                     new Log(gameID, this.curPlayer.name + ' used an item to heal!'));
                     this.itemFlag = false;
@@ -181,6 +191,7 @@ class Battle extends Phaser.Scene {
         else {
             let enemDmg = this.curEnemy.doAttack();
             this.curPlayer.adjustHP(enemDmg * (-1));
+            this.setValue(this.playerHealthBar, this.curPlayer.percentHealth());
             
             // Update battlelog to reflect changes
             let message = new Log(gameID, 
@@ -192,24 +203,26 @@ class Battle extends Phaser.Scene {
                 //console.log('current player hp: ' + this.curPlayer.curHP)
                 this.socket.emit('playerHealthUpdate', this.curPlayer.curHP)
                 this.playerTurn = true;
+        }
+        /*
+            Check if Player or Enemy is defeated
+        */
+        if(this.curPlayer != null) {
+            if(this.curPlayer.isDead) {
+               localStorage.setItem("curPlayer", this.curPlayer);
+               this.socket.close();
+               this.scene.start('lossScene');
+               //this.scene.stop();
+
             }
-            /*
-                Check if Player or Enemy is defeated
-            */
-           if(this.curPlayer != null) {
-               if(this.curPlayer.isDead) {
-                   localStorage.setItem("curPlayer", this.curPlayer)
-                   this.scene.start('lossScene')
-                   //TODO: Player loses screen
-                   //console.log("Player loses");
-               }
-               if(this.curEnemy.isDead) {
-                   localStorage.setItem("curPlayer", this.curPlayer)
-                   this.scene.start('victoryScene')
-                   //TODO: Player wins screen
-                   //console.log("Player wins");
-               }
-           }
+            if(this.curEnemy.isDead) {
+               localStorage.setItem("curPlayer", this.curPlayer);
+               this.socket.close();
+               this.scene.start('victoryScene');
+               //this.scene.stop();
+
+            }
+        }
             
         }
     }

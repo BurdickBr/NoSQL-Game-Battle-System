@@ -43,6 +43,10 @@ class Player {
         return true;
     }
 
+    percentHealth() {
+        return Math.round(this.curHP / this.maxHP * 100.0);
+    }
+
     /*
         Turn MongoDB document into a player object
     */

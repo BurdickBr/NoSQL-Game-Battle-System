@@ -11,7 +11,7 @@ class Loss extends Phaser.Scene {
     init() {
         this.socket.connect("http://localhost:3000")
         const gameID = localStorage.getItem("gameID")
-        this.curPlayer = localStorage.getItem("curPlayer")
+        this.curPlayer = new Player(gameID);
     }
 
     preload() {
@@ -20,16 +20,16 @@ class Loss extends Phaser.Scene {
     }
 
     create() {
-        console.log(this.curPlayer.name + ' MADE IT TO THE Loss SCENE!!!')
+        //console.log(this.curPlayer.name + ' MADE IT TO THE Loss SCENE!!!')
         this.add.image(game.config.width/2, game.config.height/2, 'lossImg')
-            .setScale(2)
+            .setScale(1.5)
         this.enterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
         
         this.enterKey.on("down", async event => {
             console.log("Healing player, resetting xp, sending them back to battleScene");
             this.curPlayer.curHP = this.curPlayer.maxHP
             this.curPlayer.exp = 0
-            socket.emit("playerHealthUpdate", this.curPlayer.maxHP)
+            this.socket.emit("playerHealthUpdate", this.curPlayer.maxHP)
             localStorage.setItem("curPlayer", this.curPlayer)
             this.scene.start('battleScene')
         });

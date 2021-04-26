@@ -18,6 +18,10 @@ class Enemy {
         return Math.round(this.damage * atkPercent);
     }
 
+    percentHealth() {
+        return Math.round(this.curHP / this.maxHP * 100.0);
+    }
+
     adjustHP(adjHp) {
         this.curHP += adjHp;
         if(this.curHP > this.maxHP) {
