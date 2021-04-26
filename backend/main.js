@@ -77,6 +77,8 @@ io.on("connection", (socket) => {
     });
     socket.on("battleMessage", (message) => {
         //console.log('active room: ' + socket.activeRoom)
+        console.log('message: ',message)
+        console.log('this shit should only come out twice!!!!')
         logCollection.updateOne({ "_id": socket.activeRoom} , {
             "$push": {
                 "messages": message

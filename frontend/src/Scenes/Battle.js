@@ -72,12 +72,17 @@ class Battle extends Phaser.Scene {
         //}
         this.socket.on('battleLogUpdate', (message) => {
             console.log('receieved the following message update from mongoDB: ' + message.msg + '\nUpdating battlelog now...');
-            this.battleLogMessages.push(message.time + ': ' + message.msg);
-            if(this.battleLogMessages.length > 7) {
-                this.battleLogMessages.shift()
+            if(!(this.battleLogMessages.includes(message.time + ': ' + message.msg)))
+            {
+                this.battleLogMessages.push(message.time + ': ' + message.msg);
+                if(this.battleLogMessages.length > 7) {
+                    this.battleLogMessages.shift()
+                }
+                //this.battleLog.setText('battleLog text goes here')
+                this.battleLog.setText(this.battleLogMessages)
+                console.log(this.battleLogMessages)
+                console.log('updated battlelog messages')
             }
-            //this.battleLog.setText('battleLog text goes here')
-            this.battleLog.setText(this.battleLogMessages)
         });
 
        
@@ -223,7 +228,6 @@ class Battle extends Phaser.Scene {
                localStorage.setItem("curPlayer", this.curPlayer);
                this.scene.start('victoryScene');
                //this.scene.stop();
-
             }
         }
             
