@@ -19,6 +19,7 @@ class Battle extends Phaser.Scene {
         this.curPlayer = null;
         this.enemyHealthBar = null;
         this.playerHealthBar = null;
+        this.initHealthBar = false;
         this.playerStatsBox = false;
         console.log("Battle init()");
     }
@@ -104,7 +105,7 @@ class Battle extends Phaser.Scene {
         // Battle log box
         //                                  position of battlelog box
         this.playerHealthBar = this.makeBar(w * 0.7,h * 0.4,0x2ecc71);
-        this.setValue(this.playerHealthBar, 100);
+        //this.setValue(this.playerHealthBar, 100);
         this.enemyHealthBar = this.makeBar(140,100,0xe74c4c);
         this.setValue(this.enemyHealthBar, 100)
         
@@ -258,6 +259,10 @@ class Battle extends Phaser.Scene {
                 this.playerStatsTextbox.setText("Player: " + this.curPlayer.name + 
                         '\nExperience: ' + this.curPlayer.exp)
                 this.playerStatsBox = true;
+            }
+            if(!this.initHealthBar) {
+                this.setValue(this.playerHealthBar, this.curPlayer.percentHealth());
+                this.initHealthBar = true;
             }
         }
             
