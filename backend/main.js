@@ -78,7 +78,6 @@ io.on("connection", (socket) => {
     socket.on("battleMessage", (message) => {
         //console.log('active room: ' + socket.activeRoom)
         console.log('message: ',message)
-        console.log('this shit should only come out twice!!!!')
         logCollection.updateOne({ "_id": socket.activeRoom} , {
             "$push": {
                 "messages": message
@@ -103,6 +102,12 @@ io.on("connection", (socket) => {
             }
         });
         console.log('player experience updated');
+    });
+    socket.on('getLeaderboards', async () => {
+        let result = await playerCollection.find().sort({'exp':-1}).limit(5).toArray();
+        console.log(result);    
+        socket.emit('sendLeaderboards', result)
+
     });
 });
 

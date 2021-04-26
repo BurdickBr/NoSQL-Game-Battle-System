@@ -23,7 +23,7 @@ class Victory extends Phaser.Scene {
     create() {
         //console.log(this.curPlayer.name + ' MADE IT TO THE VICTORY SCENE!!!')
         this.add.image(game.config.width/2, game.config.height/2, 'victoryImg')
-            .setScale(2)
+            .setScale(3)
         this.enterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
         this.enterKey.on("down", async event => {
             console.log("Sending player back to battleScene");

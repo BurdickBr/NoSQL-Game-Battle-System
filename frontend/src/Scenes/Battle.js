@@ -102,8 +102,7 @@ class Battle extends Phaser.Scene {
         var y = h;
 
         // Battle log box
-        //                             position of battlelog box
-        
+        //                                  position of battlelog box
         this.playerHealthBar = this.makeBar(w * 0.7,h * 0.4,0x2ecc71);
         this.setValue(this.playerHealthBar, 100);
         this.enemyHealthBar = this.makeBar(140,100,0xe74c4c);
@@ -161,6 +160,9 @@ class Battle extends Phaser.Scene {
 
     }
 
+    /*
+        Functions for creating health bars
+    */
     makeBar(x, y, color) {
         let bar = this.add.graphics();
         bar.fillStyle(color, 1);
@@ -175,7 +177,7 @@ class Battle extends Phaser.Scene {
 
     update() {
         /*
-        Battle Logic
+            Battle Logic
         */
        if (this.playerTurn) {
            if(this.atkFlag) {
