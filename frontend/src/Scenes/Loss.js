@@ -29,6 +29,7 @@ class Loss extends Phaser.Scene {
             console.log("Healing player, resetting xp, sending them back to battleScene");
             this.curPlayer.curHP = this.curPlayer.maxHP
             this.curPlayer.exp = 0
+            await new Promise(r => setTimeout(r, 100)); //wait 100ms
             this.socket.emit("playerHealthUpdate", this.curPlayer.maxHP)
             localStorage.setItem("curPlayer", this.curPlayer)
             this.scene.start('battleScene')

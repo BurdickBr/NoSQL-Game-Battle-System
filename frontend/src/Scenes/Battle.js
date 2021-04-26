@@ -209,15 +209,18 @@ class Battle extends Phaser.Scene {
         */
         if(this.curPlayer != null) {
             if(this.curPlayer.isDead) {
+                this.curPlayer.curHP = this.curPlayer.maxHP;
+                this.curPlayer.exp = 0;
+                this.isDead = false;
+                this.socket.emit("playerHealthUpdate", this.curPlayer.maxHP);
                localStorage.setItem("curPlayer", this.curPlayer);
-               this.socket.close();
+               
                this.scene.start('lossScene');
                //this.scene.stop();
 
             }
             if(this.curEnemy.isDead) {
                localStorage.setItem("curPlayer", this.curPlayer);
-               this.socket.close();
                this.scene.start('victoryScene');
                //this.scene.stop();
 
